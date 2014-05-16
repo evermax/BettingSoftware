@@ -10,6 +10,8 @@ import fr.uv1.utils.MyCalendar;
 
 public class Competition {
 
+	private static final String REGEX_COMPNAME = new String("[a-zA-Z0-9\\-_]*");
+
 	private String name;
 	private Calendar closingDate;
 	/**
@@ -31,7 +33,8 @@ public class Competition {
 	public Competition(String name, Calendar closingDate,
 			Collection<Competitor> competitors) throws BadParametersException,
 			CompetitionException {
-		if (name == null || closingDate == null || competitors == null) {
+		if (name == null || !name.matches(REGEX_COMPNAME)
+				|| closingDate == null || competitors == null) {
 			throw new BadParametersException();
 		}
 		// Exception si la date de cloture est déjà passée
@@ -50,23 +53,22 @@ public class Competition {
 		 */
 		ArrayList<Competitor> distinctCompetitors = new ArrayList<Competitor>();
 		for (Competitor c : competitors) {
-			if (c instanceof CompetitorTeam) {
-				for (Competitor c1 : ((CompetitorTeam) c).getMembers()) {
-					if (!distinctCompetitors.contains(c1)) {
-						distinctCompetitors.add(c1);
-					} else {
-						throw new CompetitionException();
+			if (!distinctCompetitors.contains(c)) {
+				distinctCompetitors.add(c);
+				if (c instanceof CompetitorTeam) {
+					for (Competitor c1 : ((CompetitorTeam) c).getMembers()) {
+						if (!distinctCompetitors.contains(c1)) {
+							distinctCompetitors.add(c1);
+						} else {
+							throw new CompetitionException();
+						}
 					}
 				}
 			} else {
-				if (!distinctCompetitors.contains(c)) {
-					distinctCompetitors.add(c);
-				} else {
-					throw new CompetitionException();
-				}
+				throw new CompetitionException();
 			}
 		}
-		
+
 		this.players = distinctCompetitors;
 
 		this.name = name;
@@ -94,7 +96,7 @@ public class Competition {
 	public Collection<Competitor> getCompetitors() {
 		return competitors;
 	}
-	
+
 	public boolean isAParticipant(Competitor comp) {
 		return players.contains(comp);
 	}
