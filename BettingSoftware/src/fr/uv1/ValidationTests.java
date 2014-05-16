@@ -2,7 +2,6 @@ package fr.uv1;
 
 import fr.uv1.bettingServices.*;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
-import fr.uv1.tests.validation.*;
 import fr.uv1.tests.validation.withoutPersistence.FirstIncrementValidationTests;
 
 public class ValidationTests {

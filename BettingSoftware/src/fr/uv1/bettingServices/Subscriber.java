@@ -1,9 +1,7 @@
 package fr.uv1.bettingServices;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.SubscriberException;
@@ -53,8 +51,6 @@ public class Subscriber implements Serializable {
 	private String username;
 	private String password;
 
-	private Collection<Bet> bets;
-
 	private long tokens = 0;
 	private Calendar birthdate;
 
@@ -71,7 +67,6 @@ public class Subscriber implements Serializable {
 		password = RandPass.getPass(Constraints.LONG_PWD);
 		this.setPassword(password);
 		this.setBirthdate(birthdate);
-		this.bets = new ArrayList<Bet>(); 
 	}
 
 	public String getFirstname() {
@@ -309,21 +304,9 @@ public class Subscriber implements Serializable {
 			throw new AuthenticationException("incorrect subscriber's password");
 	}
 
-	public void deleteBetsCompetition(String competitionName) {
-		for (Bet bet : this.bets) {
-			if (bet.getCompetitionName().equals(competitionName)) {
-				bets.remove(bet);
-			}
-		}
-	}
-
 	public void changePassword(String currentPassword, String newPassword)
 			throws AuthenticationException, BadParametersException {
 		this.authenticateSubscriber(currentPassword);
 		this.setPassword(newPassword);
-	}
-
-	public void addBet(Bet bet) {
-		this.bets.add(bet);
 	}
 }

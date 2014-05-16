@@ -103,6 +103,12 @@ public class BettingSoft implements Betting {
 		// Look if a subscriber with the same username already exists
 		Subscriber s = searchSubscriberByUsername(a_username);
 		if (s != null) {
+			// On supprime tous les paris de ce joueur
+			for (Bet b : bets) {
+				if (b.getSubscriber() == s) {
+					bets.remove(b);
+				}
+			}
 			subscribers.remove(s); // remove it
 			return s.getTokens();
 		} else
@@ -170,16 +176,16 @@ public class BettingSoft implements Betting {
 	}
 
 	/**
-	 * Méthode permettant de chercher un compétiteur é partir de son nom, son
+	 * Méthode permettant de chercher un compétiteur à partir de son nom, son
 	 * prénom et sa date de naissance
 	 * 
 	 * @param lastName
-	 *            nom du compétiteur é rechercher
+	 *            nom du compétiteur à rechercher
 	 * @param firstName
-	 *            prénom du compétiteur é rechercher
+	 *            prénom du compétiteur à rechercher
 	 * @param borndate
-	 *            date de naissance du compétiteur é rechercher
-	 * @return Competiteur correspondant é ces données s'il existe, null sinon
+	 *            date de naissance du compétiteur à rechercher
+	 * @return Competiteur correspondant à ces données s'il existe, null sinon
 	 * @throws BadParametersException
 	 */
 	private Competitor searchPlayerCompetitorByInfos(String lastName,
@@ -220,10 +226,10 @@ public class BettingSoft implements Betting {
 	}
 
 	/**
-	 * Méthode permettant de chercher une compétition é partir de son nom
+	 * Méthode permettant de chercher une compétition à partir de son nom
 	 * 
 	 * @param name
-	 *            nom de la compétition é chercher
+	 *            nom de la compétition à chercher
 	 * @return Competition portant ce nom si elle existe, null sinon
 	 */
 	private Competition searchCompetitionByName(String name) {
@@ -247,7 +253,7 @@ public class BettingSoft implements Betting {
 	 *            chaine contenant la date au format jj/mm/aaaa
 	 * @return objet Calendar contenant la date donnée
 	 * @throws BadParametersException
-	 *             si la date n'a pas pu étre convertie
+	 *             si la date n'a pas pu être convertie
 	 */
 	private Calendar convertStringToDate(String date)
 			throws BadParametersException {
@@ -289,14 +295,14 @@ public class BettingSoft implements Betting {
 		// Authentification du manager
 		authenticateMngr(managerPwd);
 
-		// On cherche si une compétition avec le méme nom existe
+		// On cherche si une compétition avec le même nom existe
 		if (searchCompetitionByName(competition) != null) {
 			throw new ExistingCompetitionException();
 		}
 
 		Competition c = new Competition(competition, closingDate, competitors);
 
-		// Ajout de la compétition é la liste des compétitions
+		// Ajout de la compétition à la liste des compétitions
 		competitions.add(c);
 	}
 
@@ -343,7 +349,7 @@ public class BettingSoft implements Betting {
 		if (comp.isClosed()) {
 			throw new CompetitionException();
 		}
-		// On vérifie que le compétiteur é ajouter ne participe pas déjé é la
+		// On vérifie que le compétiteur à ajouter ne participe pas déjà à la
 		// compétition
 		if (comp.getCompetitors().contains(competitor)) {
 			throw new ExistingCompetitorException();
@@ -372,9 +378,9 @@ public class BettingSoft implements Betting {
 		Calendar date = convertStringToDate(borndate);
 
 		/*
-		 * On cherche si le compétiteur é ajouter est déjé présent ou non dans
+		 * On cherche si le compétiteur à ajouter est déjà présent ou non dans
 		 * la liste. On retourne l'instance existante le cas échéant. Sinon on
-		 * l'ajoute é la liste
+		 * l'ajoute à la liste
 		 */
 		Competitor c = searchPlayerCompetitorByInfos(lastName, firstName, date);
 		if (c != null) {
@@ -399,9 +405,9 @@ public class BettingSoft implements Betting {
 		}
 
 		/*
-		 * On cherche si une équipe portant le méme nom existe déjé. Si oui, on
+		 * On cherche si une équipe portant le méme nom existe déjà. Si oui, on
 		 * retoune l'instance existante. Sinon, on créé une nouvelle équipe et
-		 * on l'ajoute é la liste.
+		 * on l'ajoute à la liste.
 		 */
 		Competitor t = searchTeamByName(name);
 		if (t != null) {
@@ -471,14 +477,15 @@ public class BettingSoft implements Betting {
 			String managerPwd) throws AuthenticationException,
 			ExistingCompetitionException, CompetitionException {
 		authenticateMngr(managerPwd);
-		// Liste des vainqueurs associés au nombre de jetons qu'ils ont parié
+		// Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
 		Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();
 		// Nombre total de jetons pariés
 		long totalTokens = 0;
 		// Nombre total de jetons pariés sur la vainqueur
 		long totalTokensOnWinner = 0;
 		for (Bet b : bets) {
-			if (b.getCompetitionName().equals(competition)) {
+			if (!b.isBetOnPodium()
+					&& b.getCompetitionName().equals(competition)) {
 				totalTokens += b.getTokenNumber();
 				if (b.getWinner().equals(winner)) {
 					totalTokensOnWinner += b.getTokenNumber();
@@ -512,9 +519,53 @@ public class BettingSoft implements Betting {
 			Competitor second, Competitor third, String managerPwd)
 			throws AuthenticationException, ExistingCompetitionException,
 			CompetitionException {
-		// TODO Auto-generated method stub
 		authenticateMngr(managerPwd);
-		ArrayList<Subscriber> winners = new ArrayList<Subscriber>();
+		// Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
+		Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();
+		// Nombre total de jetons pariés
+		long totalTokens = 0;
+		// Nombre total de jetons pariés sur la vainqueur
+		long totalTokensOnWinner = 0;
+		for (Bet b : bets) {
+			if (b.isBetOnPodium() && b.getCompetitionName().equals(competition)) {
+				totalTokens += b.getTokenNumber();
+				if (b.getWinner().equals(winner)
+						&& b.getSecond().equals(second)
+						&& b.getThird().equals(third)) {
+					totalTokensOnWinner += b.getTokenNumber();
+					Subscriber s = b.getSubscriber();
+					if (tokensPerWinner.containsKey(s)) {
+						tokensPerWinner.put(s,
+								tokensPerWinner.get(s) + b.getTokenNumber());
+					} else {
+						tokensPerWinner.put(s, b.getTokenNumber());
+					}
+				}
+			}
+		}
+		if (!tokensPerWinner.isEmpty()) {
+			Set<Subscriber> winners = tokensPerWinner.keySet();
+			for (Subscriber w : winners) {
+				long redistributedToken = (totalTokens * tokensPerWinner.get(w))
+						/ totalTokensOnWinner;
+				try {
+					creditSubscriber(w.getUsername(), redistributedToken,
+							managerPassword);
+				} catch (ExistingSubscriberException e) {
+					e.printStackTrace();
+				} catch (BadParametersException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			for (Bet b : bets) {
+				try {
+					b.getSubscriber().creditTokens(b.getTokenNumber());
+				} catch (BadParametersException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@Override
@@ -523,30 +574,34 @@ public class BettingSoft implements Betting {
 			throws AuthenticationException, CompetitionException,
 			ExistingCompetitionException, SubscriberException,
 			BadParametersException {
-		// TODO Auto-generated method stub
+		// On authentifie le joueur
 		Subscriber s = searchSubscriberByUsername(username);
 		if (s == null)
 			throw new SubscriberException();
 		s.authenticateSubscriber(pwdSubs);
+		
 		// On vérifie que la compétition existe et est encore ouverte
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
 			throw new ExistingCompetitionException();
 		if (c.isClosed())
 			throw new CompetitionException();
-		// On vérifie que le compétiteur sur lequel le joueur parie participe é
+		
+		// On vérifie que le compétiteur sur lequel le joueur parie participe à
 		// la compétition
 		if (!c.getCompetitors().contains(winner))
 			throw new CompetitionException();
-		// On vérifie que le joueur ne participe pas é la compétition
+
+		// On vérifie que le joueur ne participe pas à la compétition
 		// On vérifie d'abord si le joueur est un compétiteur
 		Competitor comp = searchPlayerCompetitorByInfos(s.getLastname(),
 				s.getFirstname(), s.getBirthdate());
-		// Si c'est un compétiteur, on vérifie s'il participe é la compétition
+		// Si c'est un compétiteur, on vérifie s'il participe à la compétition
 		if (comp != null && c.isAParticipant(comp)) {
 			throw new CompetitionException();
 		}
 
+		// On débite le nombre de jetons pariés du compte du joueur
 		try {
 			debitSubscriber(username, numberTokens, managerPassword);
 		} catch (ExistingSubscriberException e) {
@@ -554,7 +609,6 @@ public class BettingSoft implements Betting {
 		}
 		Bet b = new Bet(numberTokens, s, competition, winner);
 		// s.debitTokens(numberTokens);
-		s.addBet(b);
 		this.bets.add(b);
 	}
 
@@ -564,37 +618,43 @@ public class BettingSoft implements Betting {
 			String username, String pwdSubs) throws AuthenticationException,
 			CompetitionException, ExistingCompetitionException,
 			SubscriberException, BadParametersException {
-		// TODO Auto-generated method stub
+		// On authentifie le joueur
 		Subscriber s = searchSubscriberByUsername(username);
 		if (s == null)
 			throw new SubscriberException();
 		s.authenticateSubscriber(pwdSubs);
+		
+		// On vérifie que la compétition existe et n'est pas terminée
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
 			throw new ExistingCompetitionException();
-		if (c.getClosingDate().before(new GregorianCalendar()))
+		if (c.isClosed())
 			throw new CompetitionException();
+		
+		// On vérifie que les compétiteurs sur lesquels le joueur parie
+		// participent bien à la compétition
 		Collection<Competitor> competitors = c.getCompetitors();
 		if (!competitors.contains(winner) || !competitors.contains(second)
 				|| !competitors.contains(third))
 			throw new CompetitionException();
-		// On vérifie que le joueur ne participe pas é la compétition
+		
+		// On vérifie que le joueur ne participe pas à la compétition
 		// On vérifie d'abord si le joueur est un compétiteur
 		Competitor comp = searchPlayerCompetitorByInfos(s.getLastname(),
 				s.getFirstname(), s.getBirthdate());
-		// Si c'est un compétiteur, on vérifie s'il participe é la compétition
+		// Si c'est un compétiteur, on vérifie s'il participe à la compétition
 		if (comp != null && c.isAParticipant(comp)) {
 			throw new CompetitionException();
 		}
+		
+		// On débite le nombre de jetons pariés du compte du joueur
 		Bet b = new Bet(numberTokens, s, competition, winner, second, third);
 		try {
 			debitSubscriber(username, numberTokens, managerPassword);
 		} catch (ExistingSubscriberException e) {
 			throw new AuthenticationException();
 		}
-		// Probléme d'exeptions, encore...
 		// s.debitTokens(numberTokens);
-		s.addBet(b);
 		this.bets.add(b);
 
 	}
@@ -602,7 +662,6 @@ public class BettingSoft implements Betting {
 	@Override
 	public void changeSubsPwd(String username, String newPwd, String currentPwd)
 			throws AuthenticationException, BadParametersException {
-		// TODO Auto-generated method stub
 		Subscriber s = searchSubscriberByUsername(username);
 		s.authenticateSubscriber(currentPwd);
 		s.changePassword(currentPwd, newPwd);
@@ -615,10 +674,12 @@ public class BettingSoft implements Betting {
 		ArrayList<String> infos = new ArrayList<String>();
 		Subscriber s = searchSubscriberByUsername(username);
 		s.authenticateSubscriber(pwdSubs);
-		infos.add(s.getFirstname());
 		infos.add(s.getLastname());
+		infos.add(s.getFirstname());
+		SimpleDateFormat dateParser = new SimpleDateFormat("dd-MM-yyyy");
+		infos.add(dateParser.format(s.getBirthdate()));
 		infos.add(s.getUsername());
-		// infos.add(s.getPassword()); Do we give the password ????
+		infos.add(Long.toString(s.getTokens()));
 		return infos;
 	}
 
@@ -629,10 +690,10 @@ public class BettingSoft implements Betting {
 		// TODO Auto-generated method stub
 		Subscriber s = searchSubscriberByUsername(username);
 		s.authenticateSubscriber(pwdSubs);
-		s.deleteBetsCompetition(competition);
 		for (Bet bet : this.bets) {
 			if (bet.getCompetitionName().equals(competition)) {
 				bets.remove(bet);
+				
 			}
 		}
 	}
