@@ -1,0 +1,69 @@
+<class-diagram version="1.0.11" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true">  
+  <interface id="1" corner="BOTTOM_RIGHT" language="java" name="fr.uv1.bettingServices.Betting" 
+    project="initialBettingSW" file="/initialBettingSW/src/fr/uv1/bettingServices/Betting.java" binary="false">    
+    <position height="-1" width="-1" x="501" y="128"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" name="fr.uv1.bettingServices.Subscriber" 
+    project="initialBettingSW" file="/initialBettingSW/src/fr/uv1/bettingServices/Subscriber.java" binary="false">    
+    <position height="-1" width="-1" x="492" y="449"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" name="fr.uv1.bettingServices.BettingSoft" 
+    project="initialBettingSW" file="/initialBettingSW/src/fr/uv1/bettingServices/BettingSoft.java" binary="false">    
+    <position height="-1" width="-1" x="842" y="305"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" name="fr.uv1.utils.Constraints" project="initialBettingSW" 
+    file="/initialBettingSW/src/fr/uv1/utils/Constraints.java" binary="false">    
+    <position height="-1" width="-1" x="272" y="98"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" name="fr.uv1.utils.RandPass" project="initialBettingSW" 
+    file="/initialBettingSW/src/fr/uv1/utils/RandPass.java" binary="false">    
+    <position height="-1" width="-1" x="209" y="416"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="6" corner="BOTTOM_RIGHT" language="java" name="fr.uv1.utils.BettingPasswordsVerifier" 
+    project="initialBettingSW" file="/initialBettingSW/src/fr/uv1/utils/BettingPasswordsVerifier.java" binary="false">    
+    <position height="-1" width="-1" x="207" y="253"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <association id="7">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="8" name="subscribers"/>      
+      <multiplicity id="9" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="10">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

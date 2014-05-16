@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="classDiagram" size="1063,610" id="fr.uv1.design" metadata="uml2-1.0" initialized="true" tag="1000" key="32303037303533312D3130303020696E697469616C42657474696E6753572F75736572">
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.1/@sourceConnections.0" name="Betting" location="510,90" size="245,151" id="fr.uv1.bettingServices/Betting" runTimeClassModel="subscribe(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;),unsubscribe(Ljava.lang.String;Ljava.lang.String;),listSubscribers(Ljava.lang.String;),authenticateMngr(Ljava.lang.String;),changeMngrPwd(Ljava.lang.String;Ljava.lang.String;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="222,75">
+      <children xsi:type="editmodel:MethodEditModel" name="subscribe" id="fr.uv1.bettingServices/Betting#subscribe(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="unsubscribe" id="fr.uv1.bettingServices/Betting#unsubscribe(Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="listSubscribers" id="fr.uv1.bettingServices/Betting#listSubscribers(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="authenticateMngr" id="fr.uv1.bettingServices/Betting#authenticateMngr(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="changeMngrPwd" id="fr.uv1.bettingServices/Betting#changeMngrPwd(Ljava.lang.String;Ljava.lang.String;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="BettingSoft" location="528,300" size="259,183" id="fr.uv1.bettingServices/BettingSoft" runTimeClassModel="subscribe(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;),unsubscribe(Ljava.lang.String;Ljava.lang.String;),listSubscribers(Ljava.lang.String;),authenticateMngr(Ljava.lang.String;),changeMngrPwd(Ljava.lang.String;Ljava.lang.String;),BettingSoft(Ljava.lang.String;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="236,30">
+      <children xsi:type="editmodel:AttributeEditModel" name="managerPassword" id="fr.uv1.bettingServices/BettingSoft#managerPassword"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="222,90">
+      <children xsi:type="editmodel:MethodEditModel" name="BettingSoft" id="fr.uv1.bettingServices/BettingSoft#BettingSoft(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="subscribe" id="fr.uv1.bettingServices/BettingSoft#subscribe(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="unsubscribe" id="fr.uv1.bettingServices/BettingSoft#unsubscribe(Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="listSubscribers" id="fr.uv1.bettingServices/BettingSoft#listSubscribers(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="authenticateMngr" id="fr.uv1.bettingServices/BettingSoft#authenticateMngr(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="changeMngrPwd" id="fr.uv1.bettingServices/BettingSoft#changeMngrPwd(Ljava.lang.String;Ljava.lang.String;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="fr.uv1.bettingServices/Betting&lt;-fr.uv1.bettingServices/BettingSoft" source="//@children.1" target="//@children.0" targetEnd="//@children.1/@sourceConnections.0/@children.1" sourceEnd="//@children.1/@sourceConnections.0/@children.0" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="122,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="122,151"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" id="fr.uv1.bettingServices/Subscriber@subscribers+fr.uv1.bettingServices/BettingSoft@bettingSoft" source="//@children.1" target="//@children.2" targetEnd="//@children.1/@sourceConnections.1/@children.2" label="//@children.1/@sourceConnections.1/@children.1" sourceEnd="//@children.1/@sourceConnections.1/@children.0" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:AssociationEndEditModel" name="bettingSoft" location="0,38" id="fr.uv1.bettingServices/Subscriber@subscribers+fr.uv1.bettingServices/BettingSoft@bettingSoft|fr.uv1.bettingServices/BettingSoft#bettingSoft" attachSource="true"/>
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,13" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="subscribers" location="212,97" id="fr.uv1.bettingServices/Subscriber@subscribers+fr.uv1.bettingServices/BettingSoft@bettingSoft|fr.uv1.bettingServices/Subscriber#subscribers" multiplicityLabel="//@children.1/@sourceConnections.1/@children.2/@children.1" roleLabel="//@children.1/@sourceConnections.1/@children.2/@children.0" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" - subscribers" location="294,242" size="73,13" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="*" location="294,269" size="5,13" anchorKind="LastPart"/>
+      </children>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@sourceConnections.1" name="Subscriber" location="75,165" size="212,243" id="fr.uv1.bettingServices/Subscriber" runTimeClassModel="getFirstname(),Subscriber(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;),getPassword(),lastname,firstname,password,setFirstname(Ljava.lang.String;),toString(),username,setLastname(Ljava.lang.String;),getLastname(),hasUsername(Ljava.lang.String;),equals(Ljava.lang.Object;),hashCode()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="147,105">
+      <children xsi:type="editmodel:AttributeEditModel" name="lONG_USERNAME" id="fr.uv1.bettingServices/Subscriber#lONG_USERNAME"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="rEGEX_NAME" id="fr.uv1.bettingServices/Subscriber#rEGEX_NAME"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="rEGEX_USERNAME" id="fr.uv1.bettingServices/Subscriber#rEGEX_USERNAME"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="firstname" id="fr.uv1.bettingServices/Subscriber#firstname"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="lastname" id="fr.uv1.bettingServices/Subscriber#lastname"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="username" id="fr.uv1.bettingServices/Subscriber#username"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="password" id="fr.uv1.bettingServices/Subscriber#password"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="189,75">
+      <children xsi:type="editmodel:MethodEditModel" name="Subscriber" id="fr.uv1.bettingServices/Subscriber#Subscriber(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hasUsername" id="fr.uv1.bettingServices/Subscriber#hasUsername(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="equals" id="fr.uv1.bettingServices/Subscriber#equals(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hashCode" id="fr.uv1.bettingServices/Subscriber#hashCode()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="fr.uv1.bettingServices/Subscriber#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" properties="wireOptions=1;Product=eUML2" autoName="false"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel" gridVisibility="false">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" showPopupBars="true" showConnectionHandles="true" attributeSorter="Natural" methodSorter="Natural" showClassStereotype="true" showPackageStereotype="true" showDependencyStereotype="true" showInterfaceStereotype="true" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>
