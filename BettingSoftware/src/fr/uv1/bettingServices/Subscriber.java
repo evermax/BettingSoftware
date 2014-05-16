@@ -1,7 +1,10 @@
 package fr.uv1.bettingServices;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.SubscriberException;
@@ -53,6 +56,8 @@ public class Subscriber implements Serializable {
 
 	private long tokens = 0;
 	private Calendar birthdate;
+	
+	private Collection<Bet> bets;
 
 	/*
 	 * the constructor calculates a password for the subscriber. No test on the
@@ -67,6 +72,30 @@ public class Subscriber implements Serializable {
 		password = RandPass.getPass(Constraints.LONG_PWD);
 		this.setPassword(password);
 		this.setBirthdate(birthdate);
+		bets = new ArrayList<Bet>();
+	}
+	
+	public Bet betOnWinner(Competitor winner, long tokens, String competitionName) throws BadParametersException, SubscriberException {
+		debitTokens(tokens);
+		Bet b = new Bet(tokens, this, competitionName, winner);
+		bets.add(b);
+		return b;
+	}
+	
+	public Bet betOnPodium(Competitor winner, Competitor second, Competitor third, long tokens, String competitionName) throws BadParametersException, SubscriberException {
+		debitTokens(tokens);
+		Bet b = new Bet(tokens, this, competitionName, winner, second, third);
+		bets.add(b);
+		return b;
+	}
+	
+	public boolean participates(Competition comp) throws BadParametersException {
+		CompetitorPlayer c = new CompetitorPlayer(lastname, firstname, birthdate);
+		return comp.isAParticipant(c);
+	}
+
+	public Collection<Bet> getBets() {
+		return bets;
 	}
 
 	public String getFirstname() {

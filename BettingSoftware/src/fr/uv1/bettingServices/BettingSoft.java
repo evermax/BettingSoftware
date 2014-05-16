@@ -593,22 +593,11 @@ public class BettingSoft implements Betting {
 			throw new CompetitionException();
 
 		// On vérifie que le joueur ne participe pas à la compétition
-		// On vérifie d'abord si le joueur est un compétiteur
-		Competitor comp = searchPlayerCompetitorByInfos(s.getLastname(),
-				s.getFirstname(), s.getBirthdate());
-		// Si c'est un compétiteur, on vérifie s'il participe à la compétition
-		if (comp != null && c.isAParticipant(comp)) {
+		if (s.participates(c)) {
 			throw new CompetitionException();
 		}
 
-		// On débite le nombre de jetons pariés du compte du joueur
-		try {
-			debitSubscriber(username, numberTokens, managerPassword);
-		} catch (ExistingSubscriberException e) {
-			throw new AuthenticationException();
-		}
-		Bet b = new Bet(numberTokens, s, competition, winner);
-		// s.debitTokens(numberTokens);
+		Bet b = s.betOnWinner(winner, numberTokens, competition);
 		this.bets.add(b);
 	}
 
@@ -639,22 +628,12 @@ public class BettingSoft implements Betting {
 			throw new CompetitionException();
 		
 		// On vérifie que le joueur ne participe pas à la compétition
-		// On vérifie d'abord si le joueur est un compétiteur
-		Competitor comp = searchPlayerCompetitorByInfos(s.getLastname(),
-				s.getFirstname(), s.getBirthdate());
-		// Si c'est un compétiteur, on vérifie s'il participe à la compétition
-		if (comp != null && c.isAParticipant(comp)) {
+		if (s.participates(c)) {
 			throw new CompetitionException();
 		}
 		
 		// On débite le nombre de jetons pariés du compte du joueur
-		Bet b = new Bet(numberTokens, s, competition, winner, second, third);
-		try {
-			debitSubscriber(username, numberTokens, managerPassword);
-		} catch (ExistingSubscriberException e) {
-			throw new AuthenticationException();
-		}
-		// s.debitTokens(numberTokens);
+		Bet b = s.betOnPodium(winner, second, third, numberTokens, competition);
 		this.bets.add(b);
 
 	}

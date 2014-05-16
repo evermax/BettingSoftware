@@ -30,10 +30,10 @@ public class CompetitionTest {
         competitors.add(cp2);
         competitors.add(cp3);
 
-        Competition c = new Competition("Curling Tournament",
+        Competition c = new Competition("Curling_Tournament",
                 new GregorianCalendar(2016, 05, 14), competitors);
 
-        assertTrue(c.getName() == "Curling Tournament");
+        assertTrue(c.getName() == "Curling_Tournament");
         assertTrue(c.getClosingDate().equals(
                 new GregorianCalendar(2016, 05, 14)));
     }
@@ -53,7 +53,7 @@ public class CompetitionTest {
         competitors.add(cp3);
         competitors.add(cp2);
 
-        new Competition("Curling Tournament", new GregorianCalendar(2016, 05,
+        new Competition("Curling_Tournament", new GregorianCalendar(2016, 05,
                 14), competitors);
     }
 
@@ -76,7 +76,7 @@ public class CompetitionTest {
 
         assertTrue(cp2.equals(cp4));
 
-        new Competition("Curling Tournament", new GregorianCalendar(2016, 05,
+        new Competition("Curling_Tournament", new GregorianCalendar(2016, 05,
                 14), competitors);
     }
 
@@ -111,7 +111,7 @@ public class CompetitionTest {
         competitors.add(cp2);
         competitors.add(cp3);
 
-        new Competition("Curling Tournament", null, competitors);
+        new Competition("Curling_Tournament", null, competitors);
     }
 
     @Test(expected = CompetitionException.class)
@@ -128,14 +128,14 @@ public class CompetitionTest {
         competitors.add(cp2);
         competitors.add(cp3);
 
-        new Competition("Curling Tournament", new MyCalendar(1998, 10, 04),
+        new Competition("Curling_Tournament", new MyCalendar(1998, 10, 04),
                 competitors);
     }
 
     @Test(expected = BadParametersException.class)
     public void testNullCompetitorsCompetition() throws BadParametersException,
             CompetitionException {
-        new Competition("Curling Tournament", new MyCalendar(2016, 05, 14),
+        new Competition("Curling_Tournament", new MyCalendar(2016, 05, 14),
                 null);
     }
 
@@ -147,7 +147,7 @@ public class CompetitionTest {
         ArrayList<Competitor> competitors = new ArrayList<Competitor>();
         competitors.add(cp1);
 
-        new Competition("Curling Tournament", new MyCalendar(2016, 05, 14),
+        new Competition("Curling_Tournament", new MyCalendar(2016, 05, 14),
                 competitors);
     }
 }
