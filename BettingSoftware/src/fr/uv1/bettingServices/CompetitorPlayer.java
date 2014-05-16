@@ -1,6 +1,7 @@
 package fr.uv1.bettingServices;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 
@@ -71,5 +72,13 @@ public class CompetitorPlayer extends ACompetitor {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "CompetitorPlayer [firstName=" + firstName + ", borndate="
+                + borndate.get(GregorianCalendar.DAY_OF_MONTH) + "-"
+                + borndate.get(GregorianCalendar.MONTH) + "-"
+                + borndate.get(GregorianCalendar.YEAR) + ", name=" + name + "]";
     }
 }

@@ -56,7 +56,10 @@ public class CompetitorTeam extends ACompetitor {
         if (!members.remove(member)) {
             throw new ExistingCompetitorException();
         }
-
     }
 
+    @Override
+    public String toString() {
+        return "CompetitorTeam [members=" + members + ", name=" + name + "]";
+    }
 }
