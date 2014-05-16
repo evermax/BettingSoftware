@@ -61,6 +61,7 @@ public class BettingSoftTest {
                 2014, 5, 6), competitors, mgr_pwd);
         bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
                 "BlueJeans", passSub1);
+        System.out.println(bettingProgram.listCompetitions());
         System.out.println(bettingProgram.consultBetsCompetition("100mOlympique"));
     }
 }
