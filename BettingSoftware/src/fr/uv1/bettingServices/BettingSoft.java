@@ -610,7 +610,7 @@ public class BettingSoft implements Betting {
 		// On authentifie le joueur
 		Subscriber s = searchSubscriberByUsername(username);
 		if (s == null)
-			throw new SubscriberException();
+			throw new AuthenticationException();
 		s.authenticateSubscriber(pwdSubs);
 		
 		// On vérifie que la compétition existe et n'est pas terminée
