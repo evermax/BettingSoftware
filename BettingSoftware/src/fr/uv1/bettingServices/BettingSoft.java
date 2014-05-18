@@ -473,6 +473,8 @@ public class BettingSoft implements Betting {
 		    throw new ExistingCompetitionException();
         if(!c.isClosed())
             throw new CompetitionException();
+        if(!c.isACompetitor(winner))
+            throw new CompetitionException();
 		// Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
 		Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();
 		// Nombre total de jetons pariés
@@ -522,6 +524,8 @@ public class BettingSoft implements Betting {
         if(!c.isClosed())
             throw new CompetitionException();
         if(winner.equals(second) || winner.equals(third) || second.equals(third))
+            throw new CompetitionException();
+        if(!c.areCompetitors(winner, second, third))
             throw new CompetitionException();
 		// Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
 		Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();

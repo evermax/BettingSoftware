@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import fr.uv1.bettingServices.BettingSoft;
@@ -20,6 +21,11 @@ import fr.uv1.utils.MyCalendar;
 public class BettingSoftTest {
 
     private BettingSoft bettingProgram;
+    
+    @Before
+    public void setMyCalendarToCurrentDate() {
+        MyCalendar.setDate();
+    }
 
     @Test(expected = BadParametersException.class)
     public void testBettingProgramWithEmptyPassword()
@@ -283,5 +289,82 @@ public class BettingSoftTest {
                 .createCompetitor("Groudon", "Stolley", "13-03-1984", mgr_pwd);
         MyCalendar.setDate(new MyCalendar(2017, 04, 13));
         bettingProgram.settlePodium("Coucou", c1, c2, c3, mgr_pwd);
+    }
+    
+    @Test(expected = CompetitionException.class)
+    public void testSettlePodiumSameCompetitorOnPodium() throws BadParametersException,
+            AuthenticationException, ExistingSubscriberException,
+            SubscriberException, ExistingCompetitionException, CompetitionException {
+        String mgr_pwd = "Kangourou";
+        bettingProgram = new BettingSoft(mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
+                mgr_pwd);
+        bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
+        Collection<Competitor> competitors = new ArrayList<Competitor>();
+        CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
+                .createCompetitor("Bolt", "Usain", "21-07-1986", mgr_pwd);
+        CompetitorPlayer c2 = (CompetitorPlayer) bettingProgram
+                .createCompetitor("Boyle", "Conan", "20-06-1985", mgr_pwd);
+        CompetitorPlayer c3 = (CompetitorPlayer) bettingProgram
+                .createCompetitor("Groudon", "Stolley", "13-03-1984", mgr_pwd);
+        competitors.add(c1);
+        competitors.add(c2);
+        competitors.add(c3);
+        String competitionName = "100mOlympique";
+        bettingProgram.addCompetition(competitionName, new GregorianCalendar(
+                2014, 5, 6), competitors, mgr_pwd);
+        bettingProgram.betOnPodium(200, competitionName, c1, c2, c3,
+                "BlueJeans", passSub1);
+        MyCalendar.setDate(new MyCalendar(2017, 04, 13));
+        bettingProgram.settlePodium(competitionName, c1, c2, c2, mgr_pwd);
+    }
+    
+    @Test(expected = CompetitionException.class)
+    public void testSettlePodiumNoCompetitorInCompetition() throws BadParametersException,
+            AuthenticationException, ExistingSubscriberException,
+            SubscriberException, ExistingCompetitionException, CompetitionException {
+        String mgr_pwd = "Kangourou";
+        bettingProgram = new BettingSoft(mgr_pwd);
+        Collection<Competitor> competitors = new ArrayList<Competitor>();
+        CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
+                .createCompetitor("Bolt", "Usain", "21-07-1986", mgr_pwd);
+        CompetitorPlayer c2 = (CompetitorPlayer) bettingProgram
+                .createCompetitor("Boyle", "Conan", "20-06-1985", mgr_pwd);
+        CompetitorPlayer c3 = (CompetitorPlayer) bettingProgram
+                .createCompetitor("Groudon", "Stolley", "13-03-1984", mgr_pwd);
+        competitors.add(c1);
+        competitors.add(c2);
+        String competitionName = "100mOlympique";
+        bettingProgram.addCompetition(competitionName, new GregorianCalendar(
+                2014, 5, 6), competitors, mgr_pwd);
+        MyCalendar.setDate(new MyCalendar(2017, 04, 13));
+        bettingProgram.settlePodium(competitionName, c1, c2, c3, mgr_pwd);
+    }
+    
+    @Test(expected = CompetitionException.class)
+    public void testSettlePodiumCompetitionStillOpened() throws BadParametersException,
+            AuthenticationException, ExistingSubscriberException,
+            SubscriberException, ExistingCompetitionException, CompetitionException {
+        String mgr_pwd = "Kangourou";
+        bettingProgram = new BettingSoft(mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
+                mgr_pwd);
+        bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
+        Collection<Competitor> competitors = new ArrayList<Competitor>();
+        CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
+                .createCompetitor("Bolt", "Usain", "21-07-1986", mgr_pwd);
+        CompetitorPlayer c2 = (CompetitorPlayer) bettingProgram
+                .createCompetitor("Boyle", "Conan", "20-06-1985", mgr_pwd);
+        CompetitorPlayer c3 = (CompetitorPlayer) bettingProgram
+                .createCompetitor("Groudon", "Stolley", "13-03-1984", mgr_pwd);
+        competitors.add(c1);
+        competitors.add(c2);
+        competitors.add(c3);
+        String competitionName = "100mOlympique";
+        bettingProgram.addCompetition(competitionName, new GregorianCalendar(
+                2014, 5, 6), competitors, mgr_pwd);
+        bettingProgram.betOnPodium(200, competitionName, c1, c2, c3,
+                "BlueJeans", passSub1);
+        bettingProgram.settlePodium(competitionName, c1, c2, c2, mgr_pwd);
     }
 }
