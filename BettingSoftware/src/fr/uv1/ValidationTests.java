@@ -3,6 +3,7 @@ package fr.uv1;
 import fr.uv1.bettingServices.*;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.tests.validation.withoutPersistence.FirstIncrementValidationTests;
+import fr.uv1.tests.validation.withoutPersistence.SecondIncrementValidationTests;
 
 public class ValidationTests {
 
@@ -11,7 +12,7 @@ public class ValidationTests {
 	 */
 	public static void main(String[] args) {
 
-		new FirstIncrementValidationTests() {
+		new SecondIncrementValidationTests() {
 
 			@Override
 			public Betting plugToBetting() {

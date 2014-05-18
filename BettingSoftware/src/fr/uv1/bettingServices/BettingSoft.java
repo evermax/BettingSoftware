@@ -565,30 +565,17 @@ public class BettingSoft implements Betting {
 			throws AuthenticationException, CompetitionException,
 			ExistingCompetitionException, SubscriberException,
 			BadParametersException {
-		// On authentifie le joueur
+		// On identifie le joueur
 		Subscriber s = searchSubscriberByUsername(username);
 		if (s == null)
 			throw new SubscriberException();
-		s.authenticateSubscriber(pwdSubs);
 		
-		// On vérifie que la compétition existe et est encore ouverte
+		// On vérifie que la compétition existe
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
 			throw new ExistingCompetitionException();
-		if (c.isClosed())
-			throw new CompetitionException();
-		
-		// On vérifie que le compétiteur sur lequel le joueur parie participe à
-		// la compétition
-		if (!c.isACompetitor(winner))
-			throw new CompetitionException();
 
-		// On vérifie que le joueur ne participe pas à la compétition
-		if (s.participates(c)) {
-			throw new CompetitionException();
-		}
-
-		Bet b = s.betOnWinner(winner, numberTokens, competition);
+		Bet b = c.betOnWinner(s, pwdSubs, winner, numberTokens);
 		this.bets.add(b);
 	}
 
@@ -598,31 +585,16 @@ public class BettingSoft implements Betting {
 			String username, String pwdSubs) throws AuthenticationException,
 			CompetitionException, ExistingCompetitionException,
 			SubscriberException, BadParametersException {
-		// On authentifie le joueur
+		// On identifie le joueur
 		Subscriber s = searchSubscriberByUsername(username);
 		if (s == null)
 			throw new AuthenticationException();
-		s.authenticateSubscriber(pwdSubs);
 		
-		// On vérifie que la compétition existe et n'est pas terminée
+		// On vérifie que la compétition existe
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
 			throw new ExistingCompetitionException();
-		if (c.isClosed())
-			throw new CompetitionException();
-		
-		// On vérifie que les compétiteurs sur lesquels le joueur parie
-		// participent bien à la compétition
-		if (!c.areCompetitors(winner, second, third))
-			throw new CompetitionException();
-		
-		// On vérifie que le joueur ne participe pas à la compétition
-		if (s.participates(c)) {
-			throw new CompetitionException();
-		}
-		
-		// On débite le nombre de jetons pariés du compte du joueur
-		Bet b = s.betOnPodium(winner, second, third, numberTokens, competition);
+		Bet b = c.betOnPodium(s, pwdSubs, winner, second, third, numberTokens);
 		this.bets.add(b);
 
 	}

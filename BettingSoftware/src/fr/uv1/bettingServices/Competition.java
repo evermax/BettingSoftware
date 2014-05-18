@@ -5,9 +5,11 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 
+import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.CompetitionException;
 import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
+import fr.uv1.bettingServices.exceptions.SubscriberException;
 import fr.uv1.utils.MyCalendar;
 
 public class Competition {
@@ -31,6 +33,27 @@ public class Competition {
      * membres des équipes
      */
     private Collection<Competitor> players;
+
+    /**
+     * Liste de tous les paris effectués sur cette compétition
+     */
+    private Collection<Bet> bets;
+
+    /**
+     * Constructeur de la classe competition
+     * 
+     * @param name
+     *            est le nom que l'on souhaite donner à la compétition
+     * @param closingDate
+     *            est la date de fermeture de la compétition
+     * @param competitors
+     *            est la liste de compétiteurs participant à la compétition
+     * @throws BadParametersException
+     *             est levée lorsque le nom est nulle ou ne correspond pas aux
+     *             contraintes, lorsque la date est nulle ou lorsque la liste de
+     *             compétiteurs est nulle
+     * @throws CompetitionException
+     */
 
     public Competition(String name, Calendar closingDate,
             Collection<Competitor> competitors) throws BadParametersException,
@@ -77,6 +100,7 @@ public class Competition {
         this.closingDate = closingDate;
         this.settled = false;
         this.competitors = competitors;
+        this.bets = new ArrayList<Bet>();
     }
 
     public String getName() {
@@ -106,12 +130,15 @@ public class Competition {
     public boolean isACompetitor(Competitor comp) {
         return competitors.contains(comp);
     }
-    
-    public boolean areCompetitors(Competitor comp1, Competitor comp2, Competitor comp3) {
-        return (competitors.contains(comp1)&&competitors.contains(comp2)&&competitors.contains(comp3));
+
+    public boolean areCompetitors(Competitor comp1, Competitor comp2,
+            Competitor comp3) {
+        return (competitors.contains(comp1) && competitors.contains(comp2) && competitors
+                .contains(comp3));
     }
-    
-    public void deleteCompetitor(Competitor comp) throws CompetitionException, ExistingCompetitorException {
+
+    public void deleteCompetitor(Competitor comp) throws CompetitionException,
+            ExistingCompetitorException {
         if (isClosed() || competitors.size() <= 2) {
             throw new CompetitionException();
         }
@@ -121,6 +148,57 @@ public class Competition {
         }
 
         competitors.remove(comp);
+    }
+
+    public Bet betOnWinner(Subscriber s, String pwdSubs, Competitor winner,
+            long numberTokens) throws AuthenticationException,
+            CompetitionException, BadParametersException, SubscriberException {
+        // On authentifie le joueur
+        s.authenticateSubscriber(pwdSubs);
+        //On vérifie que la compétition n'est pas terminée
+        if (isClosed())
+            throw new CompetitionException();
+
+        // On vérifie que le compétiteur sur lequel le joueur parie participe à
+        // la compétition
+        if (!isACompetitor(winner))
+            throw new CompetitionException();
+
+        // On vérifie que le joueur ne participe pas à la compétition
+        if (s.participates(this)) {
+            throw new CompetitionException();
+        }
+        Bet b = s.betOnWinner(winner, numberTokens, this.name);
+        
+        this.bets.add(b);
+        return b;
+    }
+
+    public Bet betOnPodium(Subscriber s, String pwdSubs, Competitor winner,
+            Competitor second, Competitor third, long numberTokens)
+            throws AuthenticationException, CompetitionException,
+            BadParametersException, SubscriberException {
+        // On authentifie le joueur
+        s.authenticateSubscriber(pwdSubs);
+        //On vérifie que la compétition n'est pas terminée
+        if (isClosed())
+            throw new CompetitionException();
+
+        // On vérifie que les compétiteurs sur lesquels le joueur parie
+        // participent à la compétition
+        if (!areCompetitors(winner, second, third))
+            throw new CompetitionException();
+
+        // On vérifie que le joueur ne participe pas à la compétition
+        if (s.participates(this)) {
+            throw new CompetitionException();
+        }
+        
+        // On débite le nombre de jetons pariés du compte du joueur
+        Bet b = s.betOnPodium(winner, second, third, numberTokens, this.name);
+        
+        this.bets.add(b);
+        return b;
     }
 
     @Override
@@ -153,7 +231,7 @@ public class Competition {
         return "Competition [name=" + name + ", closingDate="
                 + closingDate.get(GregorianCalendar.DAY_OF_MONTH) + "-"
                 + closingDate.get(GregorianCalendar.MONTH) + "-"
-                + closingDate.get(GregorianCalendar.YEAR) + ", settled=" + settled
-                + ", competitors=" + competitors + "]";
+                + closingDate.get(GregorianCalendar.YEAR) + ", settled="
+                + settled + ", competitors=" + competitors + "]";
     }
 }
