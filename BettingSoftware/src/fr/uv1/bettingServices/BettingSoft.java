@@ -468,6 +468,11 @@ public class BettingSoft implements Betting {
 			String managerPwd) throws AuthenticationException,
 			ExistingCompetitionException, CompetitionException {
 		authenticateMngr(managerPwd);
+		Competition c = searchCompetitionByName(competition);
+		if (c == null)
+		    throw new ExistingCompetitionException();
+        if(!c.isClosed())
+            throw new CompetitionException();
 		// Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
 		Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();
 		// Nombre total de jetons pariés
@@ -511,6 +516,13 @@ public class BettingSoft implements Betting {
 			throws AuthenticationException, ExistingCompetitionException,
 			CompetitionException {
 		authenticateMngr(managerPwd);
+        Competition c = searchCompetitionByName(competition);
+        if (c == null)
+            throw new ExistingCompetitionException();
+        if(!c.isClosed())
+            throw new CompetitionException();
+        if(winner.equals(second) || winner.equals(third) || second.equals(third))
+            throw new CompetitionException();
 		// Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
 		Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();
 		// Nombre total de jetons pariés
