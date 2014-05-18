@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
-import java.util.Hashtable;
-import java.util.Set;
 
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
@@ -59,8 +57,6 @@ public class BettingSoft implements Betting {
 	// Liste des équipes inscrites
 	private Collection<Competitor> teams;
 
-	private Collection<Bet> bets;
-
 	/**
 	 * constructor of BettingSoft
 	 * 
@@ -104,10 +100,8 @@ public class BettingSoft implements Betting {
 		Subscriber s = searchSubscriberByUsername(a_username);
 		if (s != null) {
 			// On supprime tous les paris de ce joueur
-			for (Bet b : bets) {
-				if (b.getSubscriber() == s) {
-					bets.remove(b);
-				}
+			for (Competition c: competitions) {
+			    c.deleteBets(s);
 			}
 			subscribers.remove(s); // remove it
 			return s.getTokens();
@@ -326,11 +320,6 @@ public class BettingSoft implements Betting {
 		}
 
 		competitions.remove(comp);
-		for (Bet b : bets) {
-			if (b.getCompetitionName() == competition) {
-				bets.remove(b);
-			}
-		}
 	}
 
 	@Override
@@ -502,8 +491,7 @@ public class BettingSoft implements Betting {
 		if (c == null)
 			throw new ExistingCompetitionException();
 
-		Bet b = c.betOnWinner(s, pwdSubs, winner, numberTokens);
-		this.bets.add(b);
+		c.betOnWinner(s, pwdSubs, winner, numberTokens);
 	}
 
 	@Override
@@ -521,8 +509,7 @@ public class BettingSoft implements Betting {
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
 			throw new ExistingCompetitionException();
-		Bet b = c.betOnPodium(s, pwdSubs, winner, second, third, numberTokens);
-		this.bets.add(b);
+		c.betOnPodium(s, pwdSubs, winner, second, third, numberTokens);
 
 	}
 
