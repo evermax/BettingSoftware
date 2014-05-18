@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
+import java.util.Set;
 
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.CompetitionException;
 import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
+import fr.uv1.bettingServices.exceptions.ExistingSubscriberException;
 import fr.uv1.bettingServices.exceptions.SubscriberException;
 import fr.uv1.utils.MyCalendar;
 
@@ -155,7 +158,7 @@ public class Competition {
             CompetitionException, BadParametersException, SubscriberException {
         // On authentifie le joueur
         s.authenticateSubscriber(pwdSubs);
-        //On vérifie que la compétition n'est pas terminée
+        // On vérifie que la compétition n'est pas terminée
         if (isClosed())
             throw new CompetitionException();
 
@@ -169,7 +172,7 @@ public class Competition {
             throw new CompetitionException();
         }
         Bet b = s.betOnWinner(winner, numberTokens, this.name);
-        
+
         this.bets.add(b);
         return b;
     }
@@ -180,7 +183,7 @@ public class Competition {
             BadParametersException, SubscriberException {
         // On authentifie le joueur
         s.authenticateSubscriber(pwdSubs);
-        //On vérifie que la compétition n'est pas terminée
+        // On vérifie que la compétition n'est pas terminée
         if (isClosed())
             throw new CompetitionException();
 
@@ -193,12 +196,146 @@ public class Competition {
         if (s.participates(this)) {
             throw new CompetitionException();
         }
-        
+
         // On débite le nombre de jetons pariés du compte du joueur
         Bet b = s.betOnPodium(winner, second, third, numberTokens, this.name);
-        
+
         this.bets.add(b);
         return b;
+    }
+
+    public void settleWinner(Competitor winner, BettingSoft bettingProgram,
+            String managerPassword) throws AuthenticationException,
+            CompetitionException {
+        if (!isClosed())
+            throw new CompetitionException();
+        if (!isACompetitor(winner))
+            throw new CompetitionException();
+        // Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
+        Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();
+        // Nombre total de jetons pariés
+        long totalTokens = 0;
+        // Nombre total de jetons pariés sur la vainqueur
+        long totalTokensOnWinner = 0;
+        for (Bet b : bets) {
+            if (!b.isBetOnPodium()) {
+                totalTokens += b.getTokenNumber();
+                if (b.getWinner().equals(winner)) {
+                    totalTokensOnWinner += b.getTokenNumber();
+                    Subscriber s = b.getSubscriber();
+                    if (tokensPerWinner.containsKey(s)) {
+                        tokensPerWinner.put(s,
+                                tokensPerWinner.get(s) + b.getTokenNumber());
+                    } else {
+                        tokensPerWinner.put(s, b.getTokenNumber());
+                    }
+                }
+            }
+        }
+        Set<Subscriber> winners = tokensPerWinner.keySet();
+        for (Subscriber w : winners) {
+            long redistributedToken = (totalTokens * tokensPerWinner.get(w))
+                    / totalTokensOnWinner;
+            try {
+                bettingProgram.creditSubscriber(w.getUsername(), redistributedToken,
+                        managerPassword);
+            } catch (ExistingSubscriberException e) {
+                e.printStackTrace();
+            } catch (BadParametersException e) {
+                e.printStackTrace();
+            }
+        }
+        for (Bet b : bets) {
+            if (!b.isBetOnPodium()) {
+                bets.remove(b);
+            }
+        }
+    }
+
+    public void settlePodium(Competitor winner, Competitor second,
+            Competitor third, BettingSoft bettingProgram, String managerPassword)
+            throws CompetitionException, AuthenticationException {
+        if (!isClosed())
+            throw new CompetitionException();
+        if (winner.equals(second) || winner.equals(third)
+                || second.equals(third))
+            throw new CompetitionException();
+        if (!areCompetitors(winner, second, third))
+            throw new CompetitionException();
+        // Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
+        Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();
+        // Nombre total de jetons pariés
+        long totalTokens = 0;
+        // Nombre total de jetons pariés sur la vainqueur
+        long totalTokensOnWinner = 0;
+        for (Bet b : bets) {
+            if (b.isBetOnPodium()) {
+                totalTokens += b.getTokenNumber();
+                if (b.getWinner().equals(winner)
+                        && b.getSecond().equals(second)
+                        && b.getThird().equals(third)) {
+                    totalTokensOnWinner += b.getTokenNumber();
+                    Subscriber s = b.getSubscriber();
+                    if (tokensPerWinner.containsKey(s)) {
+                        tokensPerWinner.put(s,
+                                tokensPerWinner.get(s) + b.getTokenNumber());
+                    } else {
+                        tokensPerWinner.put(s, b.getTokenNumber());
+                    }
+                }
+            }
+        }
+
+        if (!tokensPerWinner.isEmpty()) {
+            Set<Subscriber> winners = tokensPerWinner.keySet();
+            for (Subscriber w : winners) {
+                long redistributedToken = (totalTokens * tokensPerWinner.get(w))
+                        / totalTokensOnWinner;
+                try {
+                    bettingProgram.creditSubscriber(w.getUsername(),
+                            redistributedToken, managerPassword);
+                } catch (ExistingSubscriberException e) {
+                    e.printStackTrace();
+                } catch (BadParametersException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            for (Bet b : bets) {
+                if (b.isBetOnPodium()) {
+                    try {
+                        bettingProgram.creditSubscriber(b.getSubscriber()
+                                .getUsername(), b.getTokenNumber(),
+                                managerPassword);
+                    } catch (BadParametersException e) {
+                        e.printStackTrace();
+                    } catch (ExistingSubscriberException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        for (Bet b : bets) {
+            if (b.isBetOnPodium()) {
+                bets.remove(b);
+            }
+        }
+    }
+
+    public void deleteBets(Subscriber s) {
+        for (Bet bet : this.bets) {
+            if (bet.getSubscriber().equals(s)) {
+                bets.remove(bet);
+            }
+        }
+    }
+
+    public ArrayList<String> consultBets() {
+        ArrayList<String> betsString = new ArrayList<String>();
+        for (Bet bet : bets) {
+            betsString.add(bet.toString());
+        }
+        return betsString;
     }
 
     @Override

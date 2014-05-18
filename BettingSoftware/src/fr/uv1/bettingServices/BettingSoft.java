@@ -471,45 +471,7 @@ public class BettingSoft implements Betting {
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
 		    throw new ExistingCompetitionException();
-        if(!c.isClosed())
-            throw new CompetitionException();
-        if(!c.isACompetitor(winner))
-            throw new CompetitionException();
-		// Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
-		Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();
-		// Nombre total de jetons pariés
-		long totalTokens = 0;
-		// Nombre total de jetons pariés sur la vainqueur
-		long totalTokensOnWinner = 0;
-		for (Bet b : bets) {
-			if (!b.isBetOnPodium()
-					&& b.getCompetitionName().equals(competition)) {
-				totalTokens += b.getTokenNumber();
-				if (b.getWinner().equals(winner)) {
-					totalTokensOnWinner += b.getTokenNumber();
-					Subscriber s = b.getSubscriber();
-					if (tokensPerWinner.containsKey(s)) {
-						tokensPerWinner.put(s,
-								tokensPerWinner.get(s) + b.getTokenNumber());
-					} else {
-						tokensPerWinner.put(s, b.getTokenNumber());
-					}
-				}
-			}
-		}
-		Set<Subscriber> winners = tokensPerWinner.keySet();
-		for (Subscriber w : winners) {
-			long redistributedToken = (totalTokens * tokensPerWinner.get(w))
-					/ totalTokensOnWinner;
-			try {
-				creditSubscriber(w.getUsername(), redistributedToken,
-						managerPassword);
-			} catch (ExistingSubscriberException e) {
-				e.printStackTrace();
-			} catch (BadParametersException e) {
-				e.printStackTrace();
-			}
-		}
+        c.settleWinner(winner, this, managerPwd);
 	}
 
 	@Override
@@ -521,58 +483,7 @@ public class BettingSoft implements Betting {
         Competition c = searchCompetitionByName(competition);
         if (c == null)
             throw new ExistingCompetitionException();
-        if(!c.isClosed())
-            throw new CompetitionException();
-        if(winner.equals(second) || winner.equals(third) || second.equals(third))
-            throw new CompetitionException();
-        if(!c.areCompetitors(winner, second, third))
-            throw new CompetitionException();
-		// Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
-		Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();
-		// Nombre total de jetons pariés
-		long totalTokens = 0;
-		// Nombre total de jetons pariés sur la vainqueur
-		long totalTokensOnWinner = 0;
-		for (Bet b : bets) {
-			if (b.isBetOnPodium() && b.getCompetitionName().equals(competition)) {
-				totalTokens += b.getTokenNumber();
-				if (b.getWinner().equals(winner)
-						&& b.getSecond().equals(second)
-						&& b.getThird().equals(third)) {
-					totalTokensOnWinner += b.getTokenNumber();
-					Subscriber s = b.getSubscriber();
-					if (tokensPerWinner.containsKey(s)) {
-						tokensPerWinner.put(s,
-								tokensPerWinner.get(s) + b.getTokenNumber());
-					} else {
-						tokensPerWinner.put(s, b.getTokenNumber());
-					}
-				}
-			}
-		}
-		if (!tokensPerWinner.isEmpty()) {
-			Set<Subscriber> winners = tokensPerWinner.keySet();
-			for (Subscriber w : winners) {
-				long redistributedToken = (totalTokens * tokensPerWinner.get(w))
-						/ totalTokensOnWinner;
-				try {
-					creditSubscriber(w.getUsername(), redistributedToken,
-							managerPassword);
-				} catch (ExistingSubscriberException e) {
-					e.printStackTrace();
-				} catch (BadParametersException e) {
-					e.printStackTrace();
-				}
-			}
-		} else {
-			for (Bet b : bets) {
-				try {
-					b.getSubscriber().creditTokens(b.getTokenNumber());
-				} catch (BadParametersException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+        c.settlePodium(winner, second, third, this, managerPwd);
 	}
 
 	@Override
@@ -634,15 +545,13 @@ public class BettingSoft implements Betting {
 	public void deleteBetsCompetition(String competition, String username,
 			String pwdSubs) throws AuthenticationException,
 			CompetitionException, ExistingCompetitionException {
-		// TODO Auto-generated method stub
 		Subscriber s = searchSubscriberByUsername(username);
 		s.authenticateSubscriber(pwdSubs);
-		for (Bet bet : this.bets) {
-			if (bet.getCompetitionName().equals(competition)) {
-				bets.remove(bet);
-				
-			}
-		}
+		Competition comp = searchCompetitionByName(competition);
+        if (comp == null) {
+            throw new ExistingCompetitionException();
+        }
+        comp.deleteBets(s);
 	}
 
 	@Override
@@ -666,13 +575,11 @@ public class BettingSoft implements Betting {
 	@Override
 	public ArrayList<String> consultBetsCompetition(String competition)
 			throws ExistingCompetitionException {
-		ArrayList<String> bets = new ArrayList<String>();
-		for (Bet bet : this.bets) {
-			if (bet.getCompetitionName().equals(competition)) {
-				bets.add(bet.toString());
-			}
-		}
-		return bets;
+	    Competition comp = searchCompetitionByName(competition);
+        if (comp == null) {
+            throw new ExistingCompetitionException();
+        }
+		return comp.consultBets();
 	}
 
 	public static void main(String[] arg) throws BadParametersException,
