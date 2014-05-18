@@ -116,7 +116,7 @@ public class Competition {
     }
 
     public boolean isClosed() {
-        return closingDate.before(Calendar.getInstance());
+        return closingDate.before(MyCalendar.getDate());
     }
 
     public Collection<Competitor> getCompetitors() {
