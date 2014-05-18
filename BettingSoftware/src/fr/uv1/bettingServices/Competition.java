@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.CompetitionException;
+import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
 import fr.uv1.utils.MyCalendar;
 
 public class Competition {
@@ -100,6 +101,26 @@ public class Competition {
 
     public boolean isAParticipant(Competitor comp) {
         return players.contains(comp);
+    }
+
+    public boolean isACompetitor(Competitor comp) {
+        return competitors.contains(comp);
+    }
+    
+    public boolean areCompetitors(Competitor comp1, Competitor comp2, Competitor comp3) {
+        return (competitors.contains(comp1)&&competitors.contains(comp2)&&competitors.contains(comp3));
+    }
+    
+    public void deleteCompetitor(Competitor comp) throws CompetitionException, ExistingCompetitorException {
+        if (isClosed() || competitors.size() <= 2) {
+            throw new CompetitionException();
+        }
+
+        if (!isAParticipant(comp)) {
+            throw new ExistingCompetitorException();
+        }
+
+        competitors.remove(comp);
     }
 
     @Override

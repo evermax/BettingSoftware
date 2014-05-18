@@ -430,16 +430,7 @@ public class BettingSoft implements Betting {
 		if (comp == null) {
 			throw new ExistingCompetitionException();
 		}
-
-		if (comp.isClosed() || comp.getCompetitors().size() <= 2) {
-			throw new CompetitionException();
-		}
-
-		if (!comp.getCompetitors().contains(competitor)) {
-			throw new ExistingCompetitorException();
-		}
-
-		comp.getCompetitors().remove(competitor);
+		comp.deleteCompetitor(competitor);
 	}
 
 	@Override
@@ -589,7 +580,7 @@ public class BettingSoft implements Betting {
 		
 		// On vérifie que le compétiteur sur lequel le joueur parie participe à
 		// la compétition
-		if (!c.getCompetitors().contains(winner))
+		if (!c.isACompetitor(winner))
 			throw new CompetitionException();
 
 		// On vérifie que le joueur ne participe pas à la compétition
@@ -622,9 +613,7 @@ public class BettingSoft implements Betting {
 		
 		// On vérifie que les compétiteurs sur lesquels le joueur parie
 		// participent bien à la compétition
-		Collection<Competitor> competitors = c.getCompetitors();
-		if (!competitors.contains(winner) || !competitors.contains(second)
-				|| !competitors.contains(third))
+		if (!c.areCompetitors(winner, second, third))
 			throw new CompetitionException();
 		
 		// On vérifie que le joueur ne participe pas à la compétition
