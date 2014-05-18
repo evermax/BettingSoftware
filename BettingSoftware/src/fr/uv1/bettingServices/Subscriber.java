@@ -1,6 +1,7 @@
 package fr.uv1.bettingServices;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -337,5 +338,17 @@ public class Subscriber implements Serializable {
 			throws AuthenticationException, BadParametersException {
 		this.authenticateSubscriber(currentPassword);
 		this.setPassword(newPassword);
+	}
+	
+	public ArrayList<String> getInfos(String pwdSubs) throws AuthenticationException{
+	    ArrayList<String> infos = new ArrayList<String>();
+	    authenticateSubscriber(pwdSubs);
+        infos.add(getLastname());
+        infos.add(getFirstname());
+        SimpleDateFormat dateParser = new SimpleDateFormat("dd-MM-yyyy");
+        infos.add(dateParser.format(getBirthdate()));
+        infos.add(getUsername());
+        infos.add(Long.toString(getTokens()));
+	    return infos;
 	}
 }

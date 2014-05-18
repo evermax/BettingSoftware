@@ -649,17 +649,8 @@ public class BettingSoft implements Betting {
 	@Override
 	public ArrayList<String> infosSubscriber(String username, String pwdSubs)
 			throws AuthenticationException {
-		// TODO Auto-generated method stub
-		ArrayList<String> infos = new ArrayList<String>();
 		Subscriber s = searchSubscriberByUsername(username);
-		s.authenticateSubscriber(pwdSubs);
-		infos.add(s.getLastname());
-		infos.add(s.getFirstname());
-		SimpleDateFormat dateParser = new SimpleDateFormat("dd-MM-yyyy");
-		infos.add(dateParser.format(s.getBirthdate()));
-		infos.add(s.getUsername());
-		infos.add(Long.toString(s.getTokens()));
-		return infos;
+		return s.getInfos(pwdSubs);
 	}
 
 	@Override
