@@ -472,8 +472,8 @@ public class BettingSoft implements Betting {
 		authenticateMngr(managerPwd);
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
-			throw new ExistingCompetitionException();
-		c.settleWinner(winner, this, managerPwd);
+		    throw new ExistingCompetitionException();
+        c.settleWinner(winner);
 	}
 
 	@Override
@@ -482,10 +482,10 @@ public class BettingSoft implements Betting {
 			throws AuthenticationException, ExistingCompetitionException,
 			CompetitionException {
 		authenticateMngr(managerPwd);
-		Competition c = searchCompetitionByName(competition);
-		if (c == null)
-			throw new ExistingCompetitionException();
-		c.settlePodium(winner, second, third, this, managerPwd);
+        Competition c = searchCompetitionByName(competition);
+        if (c == null)
+            throw new ExistingCompetitionException();
+        c.settlePodium(winner, second, third);
 	}
 
 	@Override
