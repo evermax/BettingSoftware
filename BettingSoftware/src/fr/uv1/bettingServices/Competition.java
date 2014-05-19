@@ -130,14 +130,13 @@ public class Competition {
         return players.contains(comp);
     }
 
-    public boolean isACompetitor(Competitor comp) {
-        return competitors.contains(comp);
-    }
-
-    public boolean areCompetitors(Competitor comp1, Competitor comp2,
-            Competitor comp3) {
-        return (competitors.contains(comp1) && competitors.contains(comp2) && competitors
-                .contains(comp3));
+    public boolean areCompetitors(Competitor... comps) {
+    	for (Competitor comp : comps) {
+    		if (!competitors.contains(comp)) {
+    			return false;
+    		}
+    	}
+    	return true;
     }
 
     public void deleteCompetitor(Competitor comp) throws CompetitionException,
@@ -156,22 +155,21 @@ public class Competition {
     public Bet betOnWinner(Subscriber s, String pwdSubs, Competitor winner,
             long numberTokens) throws AuthenticationException,
             CompetitionException, BadParametersException, SubscriberException {
-        // On authentifie le joueur
-        s.authenticateSubscriber(pwdSubs);
         // On vérifie que la compétition n'est pas terminée
         if (isClosed())
             throw new CompetitionException();
 
         // On vérifie que le compétiteur sur lequel le joueur parie participe à
         // la compétition
-        if (!isACompetitor(winner))
+        if (!areCompetitors(winner))
             throw new CompetitionException();
 
         // On vérifie que le joueur ne participe pas à la compétition
         if (s.participates(this)) {
             throw new CompetitionException();
         }
-        Bet b = s.betOnWinner(winner, numberTokens, this.name);
+        Bet b = new Bet(numberTokens, s, this, winner);
+    	s.debitTokens(numberTokens);
 
         this.bets.add(b);
         return b;
@@ -181,8 +179,6 @@ public class Competition {
             Competitor second, Competitor third, long numberTokens)
             throws AuthenticationException, CompetitionException,
             BadParametersException, SubscriberException {
-        // On authentifie le joueur
-        s.authenticateSubscriber(pwdSubs);
         // On vérifie que la compétition n'est pas terminée
         if (isClosed())
             throw new CompetitionException();
@@ -198,7 +194,8 @@ public class Competition {
         }
 
         // On débite le nombre de jetons pariés du compte du joueur
-        Bet b = s.betOnPodium(winner, second, third, numberTokens, this.name);
+        Bet b = new Bet(numberTokens, s, this, winner, second, third);
+        s.debitTokens(numberTokens);
 
         this.bets.add(b);
         return b;
@@ -209,7 +206,7 @@ public class Competition {
             CompetitionException {
         if (!isClosed())
             throw new CompetitionException();
-        if (!isACompetitor(winner))
+        if (!areCompetitors(winner))
             throw new CompetitionException();
         // Liste des vainqueurs associés au nombre de jetons qu'ils ont pariés
         Hashtable<Subscriber, Long> tokensPerWinner = new Hashtable<Subscriber, Long>();

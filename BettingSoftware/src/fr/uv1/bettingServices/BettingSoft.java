@@ -485,6 +485,9 @@ public class BettingSoft implements Betting {
 		if (s == null)
 			throw new SubscriberException();
 		
+        // On authentifie le joueur
+        s.authenticateSubscriber(pwdSubs);
+		
 		// On vérifie que la compétition existe
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
@@ -503,6 +506,9 @@ public class BettingSoft implements Betting {
 		Subscriber s = searchSubscriberByUsername(username);
 		if (s == null)
 			throw new AuthenticationException();
+		
+        // On authentifie le joueur
+        s.authenticateSubscriber(pwdSubs);
 		
 		// On vérifie que la compétition existe
 		Competition c = searchCompetitionByName(competition);

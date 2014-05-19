@@ -3,7 +3,7 @@ package fr.uv1.bettingServices;
 public class Bet {
 	private long tokenNumber;
 	private Subscriber subscriber;
-	private String competitionName;
+	private Competition competition;
 	private Competitor winner; // Should contain the choices of the the
 								// Subscriber
 	private Competitor second;
@@ -17,16 +17,16 @@ public class Bet {
 	 *            Nombre de jetons pariés sur le gagnant
 	 * @param subscriber
 	 *            Nom du joueur qui a effectué ce pari
-	 * @param competitionName
+	 * @param competition
 	 *            Nom de la compétition sur laquelle a été effectué le pari
 	 * @param winner
 	 *            Nom du compétiteur sur lequel le joueur a parié
 	 */
-	public Bet(long tokenNumber, Subscriber subscriber, String competitionName,
+	public Bet(long tokenNumber, Subscriber subscriber, Competition competition,
 			Competitor winner) {
 		this.tokenNumber = tokenNumber;
 		this.subscriber = subscriber;
-		this.competitionName = competitionName;
+		this.competition = competition;
 		this.winner = winner;
 		this.second = null;
 		this.third = null;
@@ -40,7 +40,7 @@ public class Bet {
 	 *            Nombre de jetons pariés sur le gagnant
 	 * @param subscriber
 	 *            Nom du joueur qui a effectué ce pari
-	 * @param competitionName
+	 * @param competition
 	 *            Nom de la compétition sur laquelle a été effectué le pari
 	 * @param winner
 	 *            Nom du premier compétiteur du podium
@@ -49,11 +49,11 @@ public class Bet {
 	 * @param third
 	 *            Nom du troisième compétiteur du podium
 	 */
-	public Bet(long tokenNumber, Subscriber subscriber, String competitionName,
+	public Bet(long tokenNumber, Subscriber subscriber, Competition competition,
 			Competitor winner, Competitor second, Competitor third) {
 		this.tokenNumber = tokenNumber;
 		this.subscriber = subscriber;
-		this.competitionName = competitionName;
+		this.competition = competition;
 		this.winner = winner;
 		this.second = second;
 		this.third = third;
@@ -93,8 +93,8 @@ public class Bet {
 	 * 
 	 * @return le nom de la compétition
 	 */
-	public String getCompetitionName() {
-		return competitionName;
+	public Competition getCompetition() {
+		return competition;
 	}
 
 	public Competitor getWinner() {
@@ -129,7 +129,7 @@ public class Bet {
 	@Override
 	public String toString() {
 		return "Bet [tokenNumber=" + tokenNumber + ", subscriber=" + subscriber
-				+ ", competitionName=" + competitionName + ", winner=" + winner
+				+ ", competitionName=" + competition + ", winner=" + winner
 				+ ", second=" + second + ", third=" + third + "]";
 	}
 }

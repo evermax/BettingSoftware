@@ -5,6 +5,7 @@ import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.tests.validation.withoutPersistence.FirstIncrementValidationTests;
 import fr.uv1.tests.validation.withoutPersistence.SecondIncrementValidationTests;
 
+@SuppressWarnings("unused")
 public class ValidationTests {
 
 	/**

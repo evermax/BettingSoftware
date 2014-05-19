@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
@@ -57,15 +56,14 @@ public class Subscriber implements Serializable {
 
 	private long tokens = 0;
 	private Calendar birthdate;
-	
-	private Collection<Bet> bets;
 
 	/*
 	 * the constructor calculates a password for the subscriber. No test on the
 	 * validity of names
 	 */
 	public Subscriber(String a_name, String a_firstName, String a_username,
-			Calendar birthdate) throws BadParametersException, SubscriberException {
+			Calendar birthdate) throws BadParametersException,
+			SubscriberException {
 		this.setLastname(a_name);
 		this.setFirstname(a_firstName);
 		this.setUsername(a_username);
@@ -73,30 +71,12 @@ public class Subscriber implements Serializable {
 		password = RandPass.getPass(Constraints.LONG_PWD);
 		this.setPassword(password);
 		this.setBirthdate(birthdate);
-		bets = new ArrayList<Bet>();
-	}
-	
-	public Bet betOnWinner(Competitor winner, long tokens, String competitionName) throws BadParametersException, SubscriberException {
-		debitTokens(tokens);
-		Bet b = new Bet(tokens, this, competitionName, winner);
-		bets.add(b);
-		return b;
-	}
-	
-	public Bet betOnPodium(Competitor winner, Competitor second, Competitor third, long tokens, String competitionName) throws BadParametersException, SubscriberException {
-		debitTokens(tokens);
-		Bet b = new Bet(tokens, this, competitionName, winner, second, third);
-		bets.add(b);
-		return b;
-	}
-	
-	public boolean participates(Competition comp) throws BadParametersException {
-		CompetitorPlayer c = new CompetitorPlayer(lastname, firstname, birthdate);
-		return comp.isAParticipant(c);
 	}
 
-	public Collection<Bet> getBets() {
-		return bets;
+	public boolean participates(Competition comp) throws BadParametersException {
+		CompetitorPlayer c = new CompetitorPlayer(lastname, firstname,
+				birthdate);
+		return comp.isAParticipant(c);
 	}
 
 	public String getFirstname() {
@@ -115,15 +95,18 @@ public class Subscriber implements Serializable {
 		return password;
 	}
 
-    public Calendar getBirthdate() {
-        return birthdate;
-    }
+	public Calendar getBirthdate() {
+		return birthdate;
+	}
 
-    /**
-     * Setter du nom de famille
-     * @param lastname
-     * @throws BadParametersException si le nom est vide ou si il ne correspond pas aux contraintes.
-     */
+	/**
+	 * Setter du nom de famille
+	 * 
+	 * @param lastname
+	 * @throws BadParametersException
+	 *             si le nom est vide ou si il ne correspond pas aux
+	 *             contraintes.
+	 */
 	public void setLastname(String lastname) throws BadParametersException {
 		if (lastname == null)
 			throw new BadParametersException("lastname is not valid");
@@ -133,8 +116,11 @@ public class Subscriber implements Serializable {
 
 	/**
 	 * Setter du prénom
+	 * 
 	 * @param firstname
-	 * @throws BadParametersException si le nom est vide ou si il ne correspond pas aux contraintes.
+	 * @throws BadParametersException
+	 *             si le nom est vide ou si il ne correspond pas aux
+	 *             contraintes.
 	 */
 	public void setFirstname(String firstname) throws BadParametersException {
 		if (firstname == null)
@@ -145,8 +131,11 @@ public class Subscriber implements Serializable {
 
 	/**
 	 * Setter du pseudo
+	 * 
 	 * @param username
-	 * @throws BadParametersException si le nom est vide ou si il ne correspond pas aux contraintes.
+	 * @throws BadParametersException
+	 *             si le nom est vide ou si il ne correspond pas aux
+	 *             contraintes.
 	 */
 	public void setUsername(String username) throws BadParametersException {
 		if (username == null)
@@ -157,8 +146,11 @@ public class Subscriber implements Serializable {
 
 	/**
 	 * Setter du password
+	 * 
 	 * @param password
-	 * @throws BadParametersException si le mot de passe est vide ou si il ne correspond pas aux contraintes.
+	 * @throws BadParametersException
+	 *             si le mot de passe est vide ou si il ne correspond pas aux
+	 *             contraintes.
 	 */
 	private void setPassword(String password) throws BadParametersException {
 		if (password == null)
@@ -170,22 +162,27 @@ public class Subscriber implements Serializable {
 
 	/**
 	 * Setter de la date de naissance
+	 * 
 	 * @param birthdate
-	 * @throws BadParametersException si la date n'a pas un format valide
-	 * @throws SubscriberException si la personne n'a pas 18 ans (au mois près)
+	 * @throws BadParametersException
+	 *             si la date n'a pas un format valide
+	 * @throws SubscriberException
+	 *             si la personne n'a pas 18 ans (au mois près)
 	 */
-    public void setBirthdate(Calendar birthdate) throws BadParametersException, SubscriberException {
-        if (birthdate == null)
-            throw new BadParametersException("date is not valid");
-        MyCalendar now = MyCalendar.getDate();
-        int diffMonth = (now.get(Calendar.YEAR) - birthdate.get(Calendar.YEAR))*12 + now.get(Calendar.MONTH) - birthdate.get(Calendar.MONTH);
-        if (diffMonth < 18*12)
-            throw new SubscriberException();
-            
-        this.birthdate = birthdate;
-    }
+	public void setBirthdate(Calendar birthdate) throws BadParametersException,
+			SubscriberException {
+		if (birthdate == null)
+			throw new BadParametersException("date is not valid");
+		MyCalendar now = MyCalendar.getDate();
+		int diffMonth = (now.get(Calendar.YEAR) - birthdate.get(Calendar.YEAR))
+				* 12 + now.get(Calendar.MONTH) - birthdate.get(Calendar.MONTH);
+		if (diffMonth < 18 * 12)
+			throw new SubscriberException();
 
-    /*
+		this.birthdate = birthdate;
+	}
+
+	/*
 	 * check if this subscriber has the username of the parameter
 	 * 
 	 * @param username the username to check
@@ -339,16 +336,17 @@ public class Subscriber implements Serializable {
 		this.authenticateSubscriber(currentPassword);
 		this.setPassword(newPassword);
 	}
-	
-	public ArrayList<String> getInfos(String pwdSubs) throws AuthenticationException{
-	    ArrayList<String> infos = new ArrayList<String>();
-	    authenticateSubscriber(pwdSubs);
-        infos.add(getLastname());
-        infos.add(getFirstname());
-        SimpleDateFormat dateParser = new SimpleDateFormat("dd-MM-yyyy");
-        infos.add(dateParser.format(getBirthdate()));
-        infos.add(getUsername());
-        infos.add(Long.toString(getTokens()));
-	    return infos;
+
+	public ArrayList<String> getInfos(String pwdSubs)
+			throws AuthenticationException {
+		ArrayList<String> infos = new ArrayList<String>();
+		authenticateSubscriber(pwdSubs);
+		infos.add(getLastname());
+		infos.add(getFirstname());
+		SimpleDateFormat dateParser = new SimpleDateFormat("dd-MM-yyyy");
+		infos.add(dateParser.format(getBirthdate()));
+		infos.add(getUsername());
+		infos.add(Long.toString(getTokens()));
+		return infos;
 	}
 }
