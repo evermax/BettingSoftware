@@ -73,7 +73,6 @@ public class BettingSoft implements Betting {
 		this.competitions = new ArrayList<Competition>();
 		this.competitors = new ArrayList<Competitor>();
 		this.teams = new ArrayList<Competitor>();
-		this.bets = new ArrayList<Bet>();
 	}
 
 	private void setManagerPassword(String managerPassword)

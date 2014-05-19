@@ -245,11 +245,6 @@ public class Competition {
                 e.printStackTrace();
             }
         }
-        for (Bet b : bets) {
-            if (!b.isBetOnPodium()) {
-                bets.remove(b);
-            }
-        }
     }
 
     public void settlePodium(Competitor winner, Competitor second,
@@ -313,11 +308,6 @@ public class Competition {
                         e.printStackTrace();
                     }
                 }
-            }
-        }
-        for (Bet b : bets) {
-            if (b.isBetOnPodium()) {
-                bets.remove(b);
             }
         }
     }
