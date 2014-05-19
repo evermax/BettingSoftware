@@ -111,6 +111,11 @@ public class BettingSoft implements Betting {
 				c.deleteBets(s);
 			}
 			subscribers.remove(s); // remove it
+			try {
+				SubscriberDAO.delete(s);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			return s.getTokens();
 		} else
 			throw new ExistingSubscriberException("Subscriber does not exist");

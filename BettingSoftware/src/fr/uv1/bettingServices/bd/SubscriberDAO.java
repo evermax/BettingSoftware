@@ -63,14 +63,14 @@ public class SubscriberDAO {
 	public static List<Subscriber> findAll() throws SQLException {
 		Connection c = DataBaseConnection.getConnection();
 		PreparedStatement psSelect = c
-				.prepareStatement("select * from subscribers order by id");
+				.prepareStatement("select * from subscriber order by idsubscriber");
 		ResultSet resultSet = psSelect.executeQuery();
 		List<Subscriber> subscribers = new ArrayList<Subscriber>();
 		while (resultSet.next()) {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(resultSet.getDate("birthdate"));
 			subscribers
-					.add(new Subscriber(resultSet.getInt("id"),
+					.add(new Subscriber(resultSet.getInt("idsubscriber"),
 							resultSet.getString("firstname"),
 							resultSet.getString("lastname"),
 							resultSet.getString("username"),
@@ -92,7 +92,7 @@ public class SubscriberDAO {
 		// 2 - Creating a Prepared Statement with the SQL instruction.
 		// The parameters are represented by question marks.
 		PreparedStatement psUpdate = c
-				.prepareStatement("update subscribers set firstname=?, lastname=?, username=?, tokens=?, birthdate=? where id=?");
+				.prepareStatement("update subscriber set firstname=?, lastname=?, username=?, tokens=?, birthdate=? where idsubscriber=?");
 
 		// 3 - Supplying values for the prepared statement parameters (question
 		// marks).
@@ -119,7 +119,7 @@ public class SubscriberDAO {
 	public static void delete(Subscriber subscriber) throws SQLException {
 		Connection c = DataBaseConnection.getConnection();
 		PreparedStatement psUpdate = c
-				.prepareStatement("delete from subscribers where id=?");
+				.prepareStatement("delete from subscribers where idsubscriber=?");
 		psUpdate.setInt(1, subscriber.getId());
 		psUpdate.executeUpdate();
 		psUpdate.close();
