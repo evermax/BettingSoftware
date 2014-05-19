@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Set;
 
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
@@ -310,11 +311,13 @@ public class Competition {
     }
 
     public void deleteBets(Subscriber s) {
-        for (Bet bet : this.bets) {
-            if (bet.getSubscriber().equals(s)) {
-                bets.remove(bet);
-            }
-        }
+    	Iterator<Bet> iter = bets.iterator();
+    	while (iter.hasNext()) {
+    		Bet bet = iter.next();
+    		if (bet.getSubscriber().equals(s)) {
+    			iter.remove();
+    		}
+    	}
     }
 
     public ArrayList<String> consultBets() {

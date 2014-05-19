@@ -1,5 +1,6 @@
 package fr.uv1.bettingServices;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 
+import fr.uv1.bettingServices.bd.SubscriberDAO;
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.CompetitionException;
@@ -15,6 +17,7 @@ import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
 import fr.uv1.bettingServices.exceptions.ExistingSubscriberException;
 import fr.uv1.bettingServices.exceptions.SubscriberException;
 import fr.uv1.utils.BettingPasswordsVerifier;
+import fr.uv1.utils.DataBaseConnection;
 
 /**
  * 
@@ -69,7 +72,12 @@ public class BettingSoft implements Betting {
 	public BettingSoft(String a_managerPwd) throws BadParametersException {
 		// The password should be valid
 		setManagerPassword(a_managerPwd);
-		this.subscribers = new ArrayList<Subscriber>();
+		try {
+			this.subscribers = SubscriberDAO.findAll();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.competitions = new ArrayList<Competition>();
 		this.competitors = new ArrayList<Competitor>();
 		this.teams = new ArrayList<Competitor>();
@@ -99,8 +107,8 @@ public class BettingSoft implements Betting {
 		Subscriber s = searchSubscriberByUsername(a_username);
 		if (s != null) {
 			// On supprime tous les paris de ce joueur
-			for (Competition c: competitions) {
-			    c.deleteBets(s);
+			for (Competition c : competitions) {
+				c.deleteBets(s);
 			}
 			subscribers.remove(s); // remove it
 			return s.getTokens();
@@ -275,6 +283,12 @@ public class BettingSoft implements Betting {
 		Calendar birthdate = convertStringToDate(borndate);
 		// Creates the new subscriber
 		s = new Subscriber(lastName, firstName, username, birthdate);
+		try {
+			SubscriberDAO.persist(s);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// Add it to the collection of subscribers
 		subscribers.add(s);
 		return s.getPassword();
@@ -458,8 +472,8 @@ public class BettingSoft implements Betting {
 		authenticateMngr(managerPwd);
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
-		    throw new ExistingCompetitionException();
-        c.settleWinner(winner, this, managerPwd);
+			throw new ExistingCompetitionException();
+		c.settleWinner(winner, this, managerPwd);
 	}
 
 	@Override
@@ -468,10 +482,10 @@ public class BettingSoft implements Betting {
 			throws AuthenticationException, ExistingCompetitionException,
 			CompetitionException {
 		authenticateMngr(managerPwd);
-        Competition c = searchCompetitionByName(competition);
-        if (c == null)
-            throw new ExistingCompetitionException();
-        c.settlePodium(winner, second, third, this, managerPwd);
+		Competition c = searchCompetitionByName(competition);
+		if (c == null)
+			throw new ExistingCompetitionException();
+		c.settlePodium(winner, second, third, this, managerPwd);
 	}
 
 	@Override
@@ -484,10 +498,10 @@ public class BettingSoft implements Betting {
 		Subscriber s = searchSubscriberByUsername(username);
 		if (s == null)
 			throw new SubscriberException();
-		
-        // On authentifie le joueur
-        s.authenticateSubscriber(pwdSubs);
-		
+
+		// On authentifie le joueur
+		s.authenticateSubscriber(pwdSubs);
+
 		// On vérifie que la compétition existe
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
@@ -506,10 +520,10 @@ public class BettingSoft implements Betting {
 		Subscriber s = searchSubscriberByUsername(username);
 		if (s == null)
 			throw new AuthenticationException();
-		
-        // On authentifie le joueur
-        s.authenticateSubscriber(pwdSubs);
-		
+
+		// On authentifie le joueur
+		s.authenticateSubscriber(pwdSubs);
+
 		// On vérifie que la compétition existe
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
@@ -540,10 +554,10 @@ public class BettingSoft implements Betting {
 		Subscriber s = searchSubscriberByUsername(username);
 		s.authenticateSubscriber(pwdSubs);
 		Competition comp = searchCompetitionByName(competition);
-        if (comp == null) {
-            throw new ExistingCompetitionException();
-        }
-        comp.deleteBets(s);
+		if (comp == null) {
+			throw new ExistingCompetitionException();
+		}
+		comp.deleteBets(s);
 	}
 
 	@Override
@@ -567,10 +581,10 @@ public class BettingSoft implements Betting {
 	@Override
 	public ArrayList<String> consultBetsCompetition(String competition)
 			throws ExistingCompetitionException {
-	    Competition comp = searchCompetitionByName(competition);
-        if (comp == null) {
-            throw new ExistingCompetitionException();
-        }
+		Competition comp = searchCompetitionByName(competition);
+		if (comp == null) {
+			throw new ExistingCompetitionException();
+		}
 		return comp.consultBets();
 	}
 
@@ -580,10 +594,10 @@ public class BettingSoft implements Betting {
 			ExistingSubscriberException {
 		String mgr_pwd = "Kangourou";
 		BettingSoft bettingProgram = new BettingSoft(mgr_pwd);
-		bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
+		String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
 				mgr_pwd);
-		String passSub1 = bettingProgram
-				.searchSubscriberByUsername("BlueJeans").getPassword();
+		Subscriber s = bettingProgram.searchSubscriberByUsername("BlueJeans");
+		System.out.println(s.getId());
 		bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
 		Collection<Competitor> competitors = new ArrayList<Competitor>();
 		CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -595,9 +609,9 @@ public class BettingSoft implements Betting {
 		competitors.add(c1);
 		competitors.add(c2);
 		competitors.add(c3);
-		bettingProgram.addCompetition("100m Olympique", new GregorianCalendar(
+		bettingProgram.addCompetition("100mOlympique", new GregorianCalendar(
 				2014, 5, 6), competitors, mgr_pwd);
-		bettingProgram.betOnPodium(200, "100m Olympique", c1, c2, c3,
+		bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
 				"BlueJeans", passSub1);
 		System.out.println(bettingProgram.listCompetitions());
 	}

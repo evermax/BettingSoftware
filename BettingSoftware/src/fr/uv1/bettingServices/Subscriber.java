@@ -56,6 +56,7 @@ public class Subscriber implements Serializable {
 
 	private long tokens = 0;
 	private Calendar birthdate;
+	private int id;
 
 	/*
 	 * the constructor calculates a password for the subscriber. No test on the
@@ -71,6 +72,17 @@ public class Subscriber implements Serializable {
 		password = RandPass.getPass(Constraints.LONG_PWD);
 		this.setPassword(password);
 		this.setBirthdate(birthdate);
+	}
+
+	public Subscriber(int id, String lastname, String firstname,
+			String username, String password, long tokens, Calendar birthdate) {
+		this.id = id;
+		this.lastname = lastname;
+		this.firstname = firstname;
+		this.username = username;
+		this.password = password;
+		this.tokens = tokens;
+		this.birthdate = birthdate;
 	}
 
 	public boolean participates(Competition comp) throws BadParametersException {
@@ -348,5 +360,14 @@ public class Subscriber implements Serializable {
 		infos.add(getUsername());
 		infos.add(Long.toString(getTokens()));
 		return infos;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+
 	}
 }

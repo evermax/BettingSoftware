@@ -10,11 +10,11 @@ import java.sql.*;
 public class DataBaseConnection {
 	 //-----------------------------------------------------------------------------
 	  // Connection parameters
-	  private static String username        = "";
-	  private static String password        = "";
+	  private static String username        = "postgres";
+	  private static String password        = "postgres";
 	  private static String host            = "localhost";
 	  private static String numPort         = "54321";
-	  private static String base            = "";
+	  private static String base            = "Bet";
 	  private static String connectString   = "jdbc:postgresql://" + host + ":" + numPort + "/" + base;
 	  //-----------------------------------------------------------------------------
 	  // Registration of the PostgreSQL JDBC Driver.
