@@ -459,7 +459,7 @@ public class BettingSoft implements Betting {
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
 		    throw new ExistingCompetitionException();
-        c.settleWinner(winner, this, managerPwd);
+        c.settleWinner(winner);
 	}
 
 	@Override
@@ -471,7 +471,7 @@ public class BettingSoft implements Betting {
         Competition c = searchCompetitionByName(competition);
         if (c == null)
             throw new ExistingCompetitionException();
-        c.settlePodium(winner, second, third, this, managerPwd);
+        c.settlePodium(winner, second, third);
 	}
 
 	@Override

@@ -11,7 +11,6 @@ import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.CompetitionException;
 import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
-import fr.uv1.bettingServices.exceptions.ExistingSubscriberException;
 import fr.uv1.bettingServices.exceptions.SubscriberException;
 import fr.uv1.utils.MyCalendar;
 
@@ -201,8 +200,7 @@ public class Competition {
         return b;
     }
 
-    public void settleWinner(Competitor winner, BettingSoft bettingProgram,
-            String managerPassword) throws AuthenticationException,
+    public void settleWinner(Competitor winner) throws AuthenticationException,
             CompetitionException {
         if (!isClosed())
             throw new CompetitionException();
@@ -229,23 +227,32 @@ public class Competition {
                 }
             }
         }
-        Set<Subscriber> winners = tokensPerWinner.keySet();
-        for (Subscriber w : winners) {
-            long redistributedToken = (totalTokens * tokensPerWinner.get(w))
-                    / totalTokensOnWinner;
-            try {
-                bettingProgram.creditSubscriber(w.getUsername(), redistributedToken,
-                        managerPassword);
-            } catch (ExistingSubscriberException e) {
-                e.printStackTrace();
-            } catch (BadParametersException e) {
-                e.printStackTrace();
+        if (!tokensPerWinner.isEmpty()) {
+            Set<Subscriber> winners = tokensPerWinner.keySet();
+            for (Subscriber w : winners) {
+                long redistributedToken = (totalTokens * tokensPerWinner.get(w))
+                        / totalTokensOnWinner;
+                try {
+                    w.creditTokens(redistributedToken);
+                } catch (BadParametersException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+        } else {
+            for (Bet b : bets) {
+                if (!b.isBetOnPodium()) {
+                    try {
+                        b.getSubscriber().creditTokens(b.getTokenNumber());
+                    } catch (BadParametersException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } 
     }
 
     public void settlePodium(Competitor winner, Competitor second,
-            Competitor third, BettingSoft bettingProgram, String managerPassword)
+            Competitor third)
             throws CompetitionException, AuthenticationException {
         if (!isClosed())
             throw new CompetitionException();
@@ -284,10 +291,7 @@ public class Competition {
                 long redistributedToken = (totalTokens * tokensPerWinner.get(w))
                         / totalTokensOnWinner;
                 try {
-                    bettingProgram.creditSubscriber(w.getUsername(),
-                            redistributedToken, managerPassword);
-                } catch (ExistingSubscriberException e) {
-                    e.printStackTrace();
+                    w.creditTokens(redistributedToken);
                 } catch (BadParametersException e) {
                     e.printStackTrace();
                 }
@@ -296,12 +300,8 @@ public class Competition {
             for (Bet b : bets) {
                 if (b.isBetOnPodium()) {
                     try {
-                        bettingProgram.creditSubscriber(b.getSubscriber()
-                                .getUsername(), b.getTokenNumber(),
-                                managerPassword);
+                        b.getSubscriber().creditTokens(b.getTokenNumber());
                     } catch (BadParametersException e) {
-                        e.printStackTrace();
-                    } catch (ExistingSubscriberException e) {
                         e.printStackTrace();
                     }
                 }
