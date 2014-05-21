@@ -14,6 +14,14 @@ public abstract class ACompetitor implements Competitor {
 		}
 		this.name = name;
 	}
+	
+	public ACompetitor(int id, String name) throws BadParametersException {
+        if (name == null) {
+            throw new BadParametersException();
+        }
+        this.name = name;
+        this.id = id;
+    }
 
 	public String getName() {
 		return name;

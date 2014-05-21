@@ -18,6 +18,14 @@ public class CompetitorTeam extends ACompetitor {
         }
         members = new ArrayList<Competitor>();
     }
+    
+    public CompetitorTeam(int id, String name) throws BadParametersException {
+        super(id, name);
+        if (!name.matches(REGEX_NAME)) {
+            throw new BadParametersException();
+        }
+        members = new ArrayList<Competitor>();
+    }
 
     @Override
     public boolean hasValidName() {
