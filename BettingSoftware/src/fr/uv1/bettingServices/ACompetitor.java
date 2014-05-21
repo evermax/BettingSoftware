@@ -6,6 +6,7 @@ import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
 public abstract class ACompetitor implements Competitor {
 	
 	protected String name;
+	protected int id;
 
 	public ACompetitor(String name) throws BadParametersException {
 		if (name == null) {
@@ -18,7 +19,15 @@ public abstract class ACompetitor implements Competitor {
 		return name;
 	}
 
-	@Override
+	public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
 	public boolean hasValidName() {
 		// TODO Auto-generated method stub
 		return false;
