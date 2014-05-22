@@ -32,7 +32,7 @@ public class CompetitorTeamDAO {
             psPersist.close();
 
             // Retrieving the value of the id with a request on the
-            // sequence (subscribers_id_seq).
+            // sequence (competitor_idcompetitor_seq).
             PreparedStatement psIdValue = connection
                     .prepareStatement("select currval('competitor_idcompetitor_seq') as value_id");
             ResultSet resultSet = psIdValue.executeQuery();
@@ -59,10 +59,17 @@ public class CompetitorTeamDAO {
         connection.setAutoCommit(true);
         connection.close();
 
+        /*
+         * Maintenant il faut aussi stocker les compétiteurs qui ne sont pas
+         * encore stockés et stocker les relations d'appartenance à la
+         * des compétiteurs à cette équipe dans competitionParticipants
+         */
+
         return comp;
     }
 
-    public static List<CompetitorTeam> findAll() throws SQLException, BadParametersException {
+    public static List<CompetitorTeam> findAll() throws SQLException,
+            BadParametersException {
         Connection c = DataBaseConnection.getConnection();
         PreparedStatement psSelect = c
                 .prepareStatement("select * from competitor where isteam = true order by idcompetitor");
@@ -71,9 +78,8 @@ public class CompetitorTeamDAO {
         while (resultSet.next()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(resultSet.getDate("birthdate"));
-            competitorTeams
-                    .add(new CompetitorTeam(resultSet.getInt("idcompetitor"),
-                            resultSet.getString("name")));
+            competitorTeams.add(new CompetitorTeam(resultSet
+                    .getInt("idcompetitor"), resultSet.getString("name")));
         }
         resultSet.close();
         psSelect.close();
@@ -82,7 +88,8 @@ public class CompetitorTeamDAO {
         return competitorTeams;
     }
 
-    public static void update(CompetitorTeam competitorTeam) throws SQLException {
+    public static void update(CompetitorTeam competitorTeam)
+            throws SQLException {
         // 1 - Get a database connection from the class 'DatabaseConnection'
         Connection c = DataBaseConnection.getConnection();
 
