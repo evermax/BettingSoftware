@@ -86,7 +86,7 @@ public class CompetitorPlayerDAO {
         return competitorsPlayers;
     }
     
-    public static void update(CompetitorPlayer competitor) {
+    public static void update(CompetitorPlayer competitor) throws SQLException {
      // 1 - Get a database connection from the class 'DatabaseConnection'
         Connection c = DataBaseConnection.getConnection();
 
@@ -100,7 +100,7 @@ public class CompetitorPlayerDAO {
         psUpdate.setString(1, competitor.getName());
         psUpdate.setString(2, competitor.getFirstName());
         psUpdate.setDate(3, new java.sql.Date(competitor.getBorndate().getTimeInMillis()));
-        psUpdate.setLong(4, competitor.getTokens());
+        psUpdate.setBoolean(4, false);
         psUpdate.setInt(5, competitor.getId());
     }
 }
