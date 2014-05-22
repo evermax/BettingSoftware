@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import fr.uv1.bettingServices.Competitor;
+import fr.uv1.bettingServices.ACompetitor;
 import fr.uv1.bettingServices.CompetitorTeam;
-import fr.uv1.bettingServices.Subscriber;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.utils.DataBaseConnection;
 
@@ -42,9 +43,21 @@ public class CompetitorTeamDAO {
             }
             resultSet.close();
             psIdValue.close();
-            connection.commit();
 
             comp.setId(id);
+            
+            for (Competitor c : comp.getMembers()) {
+                PreparedStatement psAddMember = connection
+                        .prepareStatement("INSERT INTO teammembers(idteam, idcompetitor)  values (?, ?)");
+                psAddMember.setInt(1, comp.getId());
+                psAddMember.setInt(2, ((ACompetitor)c).getId());
+                
+                psAddMember.executeUpdate();
+                
+                psAddMember.close();
+            }
+
+            connection.commit();
 
         } catch (SQLException e) {
             try {
@@ -58,12 +71,6 @@ public class CompetitorTeamDAO {
 
         connection.setAutoCommit(true);
         connection.close();
-
-        /*
-         * Maintenant il faut aussi stocker les compétiteurs qui ne sont pas
-         * encore stockés et stocker les relations d'appartenance à la
-         * des compétiteurs à cette équipe dans competitionParticipants
-         */
 
         return comp;
     }

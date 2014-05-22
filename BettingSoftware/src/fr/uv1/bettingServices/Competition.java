@@ -21,6 +21,7 @@ public class Competition {
 
     private String name;
     private Calendar closingDate;
+    private int id;
     /**
      * Booléen indiquant si la compétition a été soldée ou non
      */
@@ -112,6 +113,14 @@ public class Competition {
 
     public Calendar getClosingDate() {
         return closingDate;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isSettled() {

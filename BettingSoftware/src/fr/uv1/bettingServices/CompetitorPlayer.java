@@ -25,6 +25,20 @@ public class CompetitorPlayer extends ACompetitor {
         this.firstName = firstName;
         this.borndate = borndate;
     }
+    
+    public CompetitorPlayer(int id, String lastName, String firstName, Calendar borndate)
+            throws BadParametersException {
+        super(lastName);
+        if (firstName == null || borndate == null) {
+            throw new BadParametersException();
+        }
+        if (!name.matches(REGEX_NAME) || !firstName.matches(REGEX_NAME)) {
+            throw new BadParametersException();
+        }
+        this.firstName = firstName;
+        this.borndate = borndate;
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
