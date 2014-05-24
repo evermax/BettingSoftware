@@ -19,7 +19,7 @@ public class CompetitorPlayerDAO {
         try {
             connection.setAutoCommit(false);
             PreparedStatement psPersist = connection
-                    .prepareStatement("INSERT INTO Competitor(name, firstname, birthdate, isteam)  values (?, ?, ?, ?)");
+                    .prepareStatement("INSERT INTO competitor(name, firstname, birthdate, isteam)  values (?, ?, ?, ?)");
 
             psPersist.setString(1, comp.getName());
             psPersist.setString(2, comp.getFirstName());

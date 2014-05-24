@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 import fr.uv1.bettingServices.Competition;
+import fr.uv1.bettingServices.ACompetitor;
 import fr.uv1.bettingServices.Competitor;
 import fr.uv1.bettingServices.CompetitorPlayer;
 import fr.uv1.bettingServices.CompetitorTeam;
@@ -33,11 +34,11 @@ public class CompetitionDAO {
 
             psPersist.executeUpdate();
             psPersist.close();
-
+            
             // Retrieving the value of the id with a request on the
-            // sequence (subscribers_id_seq).
+            // sequence (competition_idcompetition_seq).
             PreparedStatement psIdValue = connection
-                    .prepareStatement("select currval('competitor_idcompetitor_seq') as value_id");
+                    .prepareStatement("select currval('competition_idcompetition_seq') as value_id");
             ResultSet resultSet = psIdValue.executeQuery();
             Integer id = null;
             while (resultSet.next()) {
@@ -47,6 +48,29 @@ public class CompetitionDAO {
             resultSet.close();
 
             psIdValue.close();
+            
+            for (Competitor competitor : competition.getCompetitors()) {
+                PreparedStatement psPersistCompetitorID = connection
+                        .prepareStatement("INSERT INTO competitionparticipants(idcompetition, idcompetitor) values (?, ?)");
+                psPersistCompetitorID.setInt(1, id);
+                psPersistCompetitorID.setInt(2, ((ACompetitor)competitor).getId());
+                psPersistCompetitorID.executeUpdate();
+                psPersistCompetitorID.close();
+                
+                PreparedStatement psPersistCompetitor = connection
+                        .prepareStatement("INSERT INTO competitor(name, firstname, birthdate, isteam)  values (?, ?, ?, ?)");
+                if (((ACompetitor)competitor) instanceof CompetitorPlayer) {
+                    psPersistCompetitor.setString(1, ((CompetitorPlayer)competitor).getName());
+                    psPersistCompetitor.setString(2, ((CompetitorPlayer)competitor).getFirstName());
+                    psPersistCompetitor.setDate(3, new java.sql.Date(((CompetitorPlayer)competitor).getBorndate().getTimeInMillis()));
+                    psPersistCompetitor.setBoolean(4, false);
+                } else {
+                    psPersistCompetitor.setString(1, ((CompetitorTeam)competitor).getName());
+                    psPersistCompetitor.setString(2, null);
+                    psPersistCompetitor.setDate(3, null);
+                    psPersistCompetitor.setBoolean(4, true);
+                }
+            }
 
             connection.commit();
 
