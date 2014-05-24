@@ -75,8 +75,6 @@ public class CompetitionDAO {
                 .prepareStatement("select * from competition order by idcompetition");
         ResultSet resultSet = psSelect.executeQuery();
         List<Competition> competitions = new ArrayList<Competition>();
-        // TODO Trouver la structure idoine
-        ArrayList<Integer, String, Calendar> competitionss = new ArrayList<Integer, String, Calendar>();
         while (resultSet.next()) {
             Calendar cal = Calendar.getInstance();
             Collection<Competitor> competitors = new ArrayList<Competitor>();
@@ -99,13 +97,13 @@ public class CompetitionDAO {
                         resultCompetitorId.getInt("idcompetitor"));
                 ResultSet resultCompetitor = psCompetitor.executeQuery();
                 if (resultCompetitor.getBoolean("isteam")) {
-                    competitors.add(new CompetitorTeam(resultCompetitor
+                    competition.getCompetitors().add(new CompetitorTeam(resultCompetitor
                             .getInt("idcompetitor"), resultCompetitor
                             .getString("name")));
                 } else {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(resultCompetitor.getDate("closingdate"));
-                    competitors.add(new CompetitorPlayer(resultCompetitor
+                    competition.getCompetitors().add(new CompetitorPlayer(resultCompetitor
                             .getInt("idcompetitor"), resultCompetitor
                             .getString("name"), resultCompetitor
                             .getString("firstname"), cal));
@@ -116,9 +114,6 @@ public class CompetitionDAO {
             resultCompetitorId.close();
             psCompetitorId.close();
         }
-
-        // Créer une structure contenant tout ce qu'il faut pour instancier les
-        // competitions avec les compétiteurs et le faire maintenant.
 
         c.close();
 
