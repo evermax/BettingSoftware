@@ -106,6 +106,13 @@ public class Competition {
         this.competitors = competitors;
         this.bets = new ArrayList<Bet>();
     }
+    
+    public Competition(int id, String name, Calendar closingDate,
+            Collection<Competitor> competitors) throws BadParametersException,
+            CompetitionException{
+        this(name, closingDate, competitors);
+        this.id = id;
+    }
 
     public String getName() {
         return name;

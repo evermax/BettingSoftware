@@ -9,7 +9,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import fr.uv1.bettingServices.CompetitorPlayer;
-import fr.uv1.bettingServices.Subscriber;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.utils.DataBaseConnection;
 
