@@ -119,7 +119,7 @@ public class SubscriberDAO {
 	public static void delete(Subscriber subscriber) throws SQLException {
 		Connection c = DataBaseConnection.getConnection();
 		PreparedStatement psUpdate = c
-				.prepareStatement("delete from subscribers where idsubscriber=?");
+				.prepareStatement("delete from subscriber where idsubscriber=?");
 		psUpdate.setInt(1, subscriber.getId());
 		psUpdate.executeUpdate();
 		psUpdate.close();

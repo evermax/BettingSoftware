@@ -34,7 +34,7 @@ public class CompetitionDAO {
 
             psPersist.executeUpdate();
             psPersist.close();
-            
+
             // Retrieving the value of the id with a request on the
             // sequence (competition_idcompetition_seq).
             PreparedStatement psIdValue = connection
@@ -48,28 +48,21 @@ public class CompetitionDAO {
             resultSet.close();
 
             psIdValue.close();
-            
+
             for (Competitor competitor : competition.getCompetitors()) {
+                if (competitor instanceof CompetitorPlayer) {
+                    CompetitorPlayerDAO.persist((CompetitorPlayer) competitor);
+                } else {
+                    CompetitorTeamDAO.persist((CompetitorTeam) competitor);
+                }
                 PreparedStatement psPersistCompetitorID = connection
                         .prepareStatement("INSERT INTO competitionparticipants(idcompetition, idcompetitor) values (?, ?)");
                 psPersistCompetitorID.setInt(1, id);
-                psPersistCompetitorID.setInt(2, ((ACompetitor)competitor).getId());
+                psPersistCompetitorID.setInt(2,
+                        ((ACompetitor) competitor).getId());
                 psPersistCompetitorID.executeUpdate();
                 psPersistCompetitorID.close();
-                
-                PreparedStatement psPersistCompetitor = connection
-                        .prepareStatement("INSERT INTO competitor(name, firstname, birthdate, isteam)  values (?, ?, ?, ?)");
-                if (((ACompetitor)competitor) instanceof CompetitorPlayer) {
-                    psPersistCompetitor.setString(1, ((CompetitorPlayer)competitor).getName());
-                    psPersistCompetitor.setString(2, ((CompetitorPlayer)competitor).getFirstName());
-                    psPersistCompetitor.setDate(3, new java.sql.Date(((CompetitorPlayer)competitor).getBorndate().getTimeInMillis()));
-                    psPersistCompetitor.setBoolean(4, false);
-                } else {
-                    psPersistCompetitor.setString(1, ((CompetitorTeam)competitor).getName());
-                    psPersistCompetitor.setString(2, null);
-                    psPersistCompetitor.setDate(3, null);
-                    psPersistCompetitor.setBoolean(4, true);
-                }
+
             }
 
             connection.commit();
@@ -100,44 +93,30 @@ public class CompetitionDAO {
         ResultSet resultSet = psSelect.executeQuery();
         List<Competition> competitions = new ArrayList<Competition>();
         while (resultSet.next()) {
+            int idCompetition = resultSet.getInt("idcompetition");
+
             Calendar cal = Calendar.getInstance();
-            Collection<Competitor> competitors = new ArrayList<Competitor>();
             cal.setTime(resultSet.getDate("closingdate"));
-            competitions.add(new Competition(resultSet.getInt("idcompetition"),
-                    resultSet.getString("name"), cal, competitors));
+
+            // On récupère la liste des participants à la compétition
+            Collection<Competitor> competitors = new ArrayList<Competitor>();
+            PreparedStatement psCompetitorId = c
+                    .prepareStatement("select idcompetitor, isteam from competitionparticipants natural join competitor where idcompetition = ?");
+            psCompetitorId.setInt(1, idCompetition);
+            ResultSet resultCompetitorId = psCompetitorId.executeQuery();
+            while (resultCompetitorId.next()) {
+                int idCompetitor = resultCompetitorId.getInt("idcompetitor");
+                boolean isTeam = resultCompetitorId.getBoolean("isteam");
+                if (!isTeam) {
+                    competitors.add(CompetitorPlayerDAO.findById(idCompetitor));
+                }
+
+            }
+            competitions.add(new Competition(idCompetition, resultSet
+                    .getString("name"), cal, competitors));
         }
         resultSet.close();
         psSelect.close();
-
-        for (Competition competition : competitions) {
-            PreparedStatement psCompetitorId = c
-                    .prepareStatement("select idcompetitor from competitionparticipants where idcompetition =?");
-            psCompetitorId.setInt(1, competition.getId());
-            ResultSet resultCompetitorId = psCompetitorId.executeQuery();
-            while (resultCompetitorId.next()) {
-                PreparedStatement psCompetitor = c
-                        .prepareStatement("select * from competitor where idcompetitor = ?");
-                psCompetitor.setInt(1,
-                        resultCompetitorId.getInt("idcompetitor"));
-                ResultSet resultCompetitor = psCompetitor.executeQuery();
-                if (resultCompetitor.getBoolean("isteam")) {
-                    competition.getCompetitors().add(new CompetitorTeam(resultCompetitor
-                            .getInt("idcompetitor"), resultCompetitor
-                            .getString("name")));
-                } else {
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(resultCompetitor.getDate("closingdate"));
-                    competition.getCompetitors().add(new CompetitorPlayer(resultCompetitor
-                            .getInt("idcompetitor"), resultCompetitor
-                            .getString("name"), resultCompetitor
-                            .getString("firstname"), cal));
-                }
-                resultCompetitor.close();
-                psCompetitor.close();
-            }
-            resultCompetitorId.close();
-            psCompetitorId.close();
-        }
 
         c.close();
 

@@ -66,7 +66,7 @@ public class CompetitorPlayerDAO {
     public static List<CompetitorPlayer> findAll() throws SQLException, BadParametersException {
         Connection c = DataBaseConnection.getConnection();
         PreparedStatement psSelect = c
-                .prepareStatement("select * from competitor order by idcompetitor");
+                .prepareStatement("select * from competitor where isteam = false order by idcompetitor");
         ResultSet resultSet = psSelect.executeQuery();
         List<CompetitorPlayer> competitorsPlayers = new ArrayList<CompetitorPlayer>();
         while (resultSet.next()) {
@@ -85,6 +85,27 @@ public class CompetitorPlayerDAO {
         return competitorsPlayers;
     }
     
+    public static CompetitorPlayer findById(int id) throws SQLException, BadParametersException {
+        Connection c = DataBaseConnection.getConnection();
+        PreparedStatement psSelect = c
+                .prepareStatement("select * from competitor where idcompetitor = ?");
+        psSelect.setInt(1, id);
+        ResultSet resultSet = psSelect.executeQuery();
+        CompetitorPlayer competitor = null;
+        while (resultSet.next()) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(resultSet.getDate("birthdate"));
+            competitor = new CompetitorPlayer(resultSet.getInt("idcompetitor"),
+                            resultSet.getString("name"),
+                            resultSet.getString("firstname"),
+                            cal);
+        }
+        resultSet.close();
+        psSelect.close();
+        c.close();
+        return competitor;
+    }
+    
     public static void update(CompetitorPlayer competitor) throws SQLException {
      // 1 - Get a database connection from the class 'DatabaseConnection'
         Connection c = DataBaseConnection.getConnection();
@@ -92,7 +113,7 @@ public class CompetitorPlayerDAO {
         // 2 - Creating a Prepared Statement with the SQL instruction.
         // The parameters are represented by question marks.
         PreparedStatement psUpdate = c
-                .prepareStatement("update subscriber set name=?, firstname=?, birthdate=?, isteam=? where idsubscriber=?");
+                .prepareStatement("update competitor set name=?, firstname=?, birthdate=?, isteam=? where idcompetitor=?");
 
         // 3 - Supplying values for the prepared statement parameters (question
         // marks).

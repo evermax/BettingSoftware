@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 
+import fr.uv1.bettingServices.bd.CompetitionDAO;
 import fr.uv1.bettingServices.bd.SubscriberDAO;
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
@@ -17,7 +18,6 @@ import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
 import fr.uv1.bettingServices.exceptions.ExistingSubscriberException;
 import fr.uv1.bettingServices.exceptions.SubscriberException;
 import fr.uv1.utils.BettingPasswordsVerifier;
-import fr.uv1.utils.DataBaseConnection;
 
 /**
  * 
@@ -74,11 +74,10 @@ public class BettingSoft implements Betting {
 		setManagerPassword(a_managerPwd);
 		try {
 			this.subscribers = SubscriberDAO.findAll();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			this.competitions = CompetitionDAO.findAll();
+		} catch (SQLException | CompetitionException e) {
 			e.printStackTrace();
 		}
-		this.competitions = new ArrayList<Competition>();
 		this.competitors = new ArrayList<Competitor>();
 		this.teams = new ArrayList<Competitor>();
 	}
@@ -316,6 +315,12 @@ public class BettingSoft implements Betting {
 
 		// Ajout de la compétition à la liste des compétitions
 		competitions.add(c);
+		try {
+            CompetitionDAO.persist(c);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 	@Override
@@ -599,11 +604,10 @@ public class BettingSoft implements Betting {
 			ExistingSubscriberException {
 		String mgr_pwd = "Kangourou";
 		BettingSoft bettingProgram = new BettingSoft(mgr_pwd);
-		String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
-				mgr_pwd);
-		Subscriber s = bettingProgram.searchSubscriberByUsername("BlueJeans");
-		System.out.println(s.getId());
-		bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
+//		String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
+//				mgr_pwd);
+//		Subscriber s = bettingProgram.searchSubscriberByUsername("BlueJeans");
+//		bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
 		Collection<Competitor> competitors = new ArrayList<Competitor>();
 		CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
 				.createCompetitor("Bolt", "Usain", "21-07-1986", mgr_pwd);
@@ -616,8 +620,9 @@ public class BettingSoft implements Betting {
 		competitors.add(c3);
 		bettingProgram.addCompetition("100mOlympique", new GregorianCalendar(
 				2014, 5, 6), competitors, mgr_pwd);
-		bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
-				"BlueJeans", passSub1);
+//		bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
+//				"BlueJeans", passSub1);
 		System.out.println(bettingProgram.listCompetitions());
+//		bettingProgram.unsubscribe("BlueJeans", mgr_pwd);
 	}
 }

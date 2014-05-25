@@ -10,8 +10,10 @@ import java.util.List;
 
 import fr.uv1.bettingServices.Competitor;
 import fr.uv1.bettingServices.ACompetitor;
+import fr.uv1.bettingServices.CompetitorPlayer;
 import fr.uv1.bettingServices.CompetitorTeam;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
+import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
 import fr.uv1.utils.DataBaseConnection;
 
 public class CompetitorTeamDAO {
@@ -45,15 +47,15 @@ public class CompetitorTeamDAO {
             psIdValue.close();
 
             comp.setId(id);
-            
+
             for (Competitor c : comp.getMembers()) {
                 PreparedStatement psAddMember = connection
                         .prepareStatement("INSERT INTO teammembers(idteam, idcompetitor)  values (?, ?)");
                 psAddMember.setInt(1, comp.getId());
-                psAddMember.setInt(2, ((ACompetitor)c).getId());
-                
+                psAddMember.setInt(2, ((ACompetitor) c).getId());
+
                 psAddMember.executeUpdate();
-                
+
                 psAddMember.close();
             }
 
@@ -95,6 +97,66 @@ public class CompetitorTeamDAO {
         return competitorTeams;
     }
 
+    /**
+     * Fonction retournant la liste des compétiteurs appartenant à l'équipe dont
+     * l'id est idTeam
+     * 
+     * @param idTeam
+     *            id de l'équipe dont on souhaite trouver les membres
+     * @return Objet ArrayList<Competitor> comprenant tous les membres de
+     *         l'équipe.
+     * @throws SQLException
+     * @throws BadParametersException
+     * @throws ExistingCompetitorException
+     */
+    public static List<Competitor> findPlayersOfTeam(int idTeam)
+            throws SQLException, BadParametersException,
+            ExistingCompetitorException {
+        Connection c = DataBaseConnection.getConnection();
+        PreparedStatement psSelect = c
+                .prepareStatement("select idcompetitor, isteam from teammembers natural join competitor where idteam = ?");
+        psSelect.setInt(1, idTeam);
+        ResultSet resultSet = psSelect.executeQuery();
+        List<Competitor> members = new ArrayList<Competitor>();
+
+        // Pour chaque résultat obtenu, on cherche le compétiteur correspondant
+        // dans la base de données et on l'ajoute à la liste members
+        while (resultSet.next()) {
+            int idCompetitor = resultSet.getInt("idcompetitor");
+            boolean isTeam = resultSet.getBoolean("isteam");
+            if (!isTeam)
+                members.add(CompetitorPlayerDAO.findById(idCompetitor));
+            else
+                members.add(CompetitorTeamDAO.findById(idCompetitor));
+        }
+        resultSet.close();
+        psSelect.close();
+        c.close();
+
+        return members;
+    }
+
+    private static CompetitorTeam findById(int id) throws SQLException,
+            BadParametersException, ExistingCompetitorException {
+        Connection c = DataBaseConnection.getConnection();
+        PreparedStatement psSelect = c
+                .prepareStatement("select * from competitor where idcompetitor = ?");
+        psSelect.setInt(1, id);
+        ResultSet resultSet = psSelect.executeQuery();
+        CompetitorTeam team = null;
+        while (resultSet.next()) {
+            team = new CompetitorTeam(id, resultSet.getString("name"));
+        }
+        List<Competitor> members = findPlayersOfTeam(id);
+        for (Competitor comp : members)
+            team.addMember(comp);
+        resultSet.close();
+        psSelect.close();
+
+        c.close();
+        return team;
+    }
+
     public static void update(CompetitorTeam competitorTeam)
             throws SQLException {
         // 1 - Get a database connection from the class 'DatabaseConnection'
@@ -103,7 +165,7 @@ public class CompetitorTeamDAO {
         // 2 - Creating a Prepared Statement with the SQL instruction.
         // The parameters are represented by question marks.
         PreparedStatement psUpdate = c
-                .prepareStatement("update subscriber set name=?, firstname=?, birthdate=?, isteam=? where idcompetitor=?");
+                .prepareStatement("update competitor set name=?, firstname=?, birthdate=?, isteam=? where idcompetitor=?");
 
         // 3 - Supplying values for the prepared statement parameters (question
         // marks).
