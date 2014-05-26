@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import fr.uv1.bettingServices.BettingSoft;
 import fr.uv1.bettingServices.Competitor;
 import fr.uv1.bettingServices.CompetitorPlayer;
+import fr.uv1.bettingServices.CompetitorTeam;
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.CompetitionException;
@@ -62,12 +63,17 @@ public class GlobalTest {
         /*
          * Ajout des différents compétiteurs
          */
+        // Competiteurs (personnes)
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
                 .createCompetitor("Bolt", "Usain", "21-07-1986", mgr_password);
         CompetitorPlayer c2 = (CompetitorPlayer) bettingProgram
                 .createCompetitor("Boyle", "Conan", "20-06-1985", mgr_password);
         CompetitorPlayer c3 = (CompetitorPlayer) bettingProgram
                 .createCompetitor("Groudon", "Stolley", "13-03-1984", mgr_password);
+        
+        // Competiteurs (équipes)
+        CompetitorTeam ct1 = (CompetitorTeam) bettingProgram.createCompetitor("TheBosses", mgr_password);
+        CompetitorTeam ct2 = (CompetitorTeam) bettingProgram.createCompetitor("GreatThoughts", mgr_password);
         
         /* 
          * Ajout des différentes compétitions
