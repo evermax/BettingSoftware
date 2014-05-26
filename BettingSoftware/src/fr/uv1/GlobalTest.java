@@ -15,9 +15,11 @@ import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.CompetitionException;
 import fr.uv1.bettingServices.exceptions.ExistingCompetitionException;
+import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
 import fr.uv1.bettingServices.exceptions.ExistingSubscriberException;
 import fr.uv1.bettingServices.exceptions.SubscriberException;
 import fr.uv1.utils.DataBaseConnection;
+import fr.uv1.utils.MyCalendar;
 
 public class GlobalTest {
     public static String mgr_password = "Kangourou";
@@ -27,8 +29,8 @@ public class GlobalTest {
 
     public static void main(String[] args) throws BadParametersException,
             AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
-        
+            SubscriberException, ExistingCompetitionException, CompetitionException, ExistingCompetitorException {
+        MyCalendar.setDate();
         try {
             connection = DataBaseConnection.getConnection();
             psRemove = connection.prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
@@ -70,10 +72,16 @@ public class GlobalTest {
                 .createCompetitor("Boyle", "Conan", "20-06-1985", mgr_password);
         CompetitorPlayer c3 = (CompetitorPlayer) bettingProgram
                 .createCompetitor("Groudon", "Stolley", "13-03-1984", mgr_password);
+        CompetitorPlayer c4 = (CompetitorPlayer) bettingProgram
+                .createCompetitor("Obstay", "Cornac", "02-06-1954", mgr_password);
         
         // Competiteurs (équipes)
         CompetitorTeam ct1 = (CompetitorTeam) bettingProgram.createCompetitor("TheBosses", mgr_password);
+        ct1.addMember(c3);
+        ct1.addMember(c2);
         CompetitorTeam ct2 = (CompetitorTeam) bettingProgram.createCompetitor("GreatThoughts", mgr_password);
+        ct2.addMember(c4);
+        ct2.addMember(c1);
         
         /* 
          * Ajout des différentes compétitions
@@ -108,6 +116,7 @@ public class GlobalTest {
         /*
          * Solde des paris
          */
+        MyCalendar.setDate((MyCalendar)competition1closing);
         bettingProgram.settlePodium(competition1Name, c1, c2, c3, mgr_password);
         bettingProgram.settleWinner(competition2Name, c2, mgr_password);
     }

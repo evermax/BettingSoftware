@@ -91,6 +91,28 @@ public class CompetitorTeamDAO {
 
         return comp;
     }
+    
+    public static void addTeamMember(int idCompetitorTeam, int idCompetitorPlayer) throws SQLException {
+        Connection connection = DataBaseConnection.getConnection();
+        try {
+            PreparedStatement psAddMember = connection
+                    .prepareStatement("INSERT INTO teammembers(idteam, idcompetitor)  values (?, ?)");
+            psAddMember.setInt(1, idCompetitorTeam);
+            psAddMember.setInt(2, idCompetitorPlayer);
+
+            psAddMember.executeUpdate();
+
+            psAddMember.close();
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            connection.setAutoCommit(true);
+            throw e;
+        }
+    }
 
     public static List<Competitor> findAll() throws SQLException,
             BadParametersException {

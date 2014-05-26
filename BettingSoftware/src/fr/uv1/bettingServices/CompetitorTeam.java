@@ -1,7 +1,9 @@
 package fr.uv1.bettingServices;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
+import fr.uv1.bettingServices.bd.CompetitorTeamDAO;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
 
@@ -52,6 +54,12 @@ public class CompetitorTeam extends ACompetitor {
             throw new ExistingCompetitorException();
         }
         members.add(member);
+        try {
+            CompetitorTeamDAO.addTeamMember(getId(), ((ACompetitor)member).getId());
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
     @Override
