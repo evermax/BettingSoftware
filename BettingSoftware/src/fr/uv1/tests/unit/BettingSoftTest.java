@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.uv1.bettingServices.BettingSoft;
@@ -25,13 +27,24 @@ import fr.uv1.utils.MyCalendar;
 public class BettingSoftTest {
 
     private BettingSoft bettingProgram;
+    private static Connection connection;
+    
+    @BeforeClass
+    public static void openConnection() throws SQLException {
+        connection = DataBaseConnection.getConnection();
+    }
     
     @Before
     public void setMyCalendarToCurrentDate() throws SQLException {
         MyCalendar.setDate();
-        Connection connection = DataBaseConnection.getConnection();
         PreparedStatement psRemove = connection.prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
-        psRemove.executeQuery();
+        psRemove.executeUpdate();
+        psRemove.close();
+    }
+    
+    @AfterClass
+    public static void closeConnection() throws SQLException {
+        connection.close();
     }
 
     @Test(expected = BadParametersException.class)
