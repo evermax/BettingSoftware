@@ -371,6 +371,13 @@ public class BettingSoft implements Betting {
 		if (comp.getCompetitors().contains(competitor)) {
 			throw new ExistingCompetitorException();
 		}
+		
+		try {
+            CompetitionDAO.addCompetitorInCompetition((ACompetitor) competitor, comp);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
 		comp.getCompetitors().add(competitor);
 

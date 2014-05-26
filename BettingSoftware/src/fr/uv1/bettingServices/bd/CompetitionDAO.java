@@ -89,7 +89,20 @@ public class CompetitionDAO {
     
     public static void removeCompetitorFromCompetition(ACompetitor competitor, Competition competition) throws SQLException {
         Connection c = DataBaseConnection.getConnection();
-        PreparedStatement psSelect = c.prepareStatement("DELETE FROM competitionparticipants where idcompetitor = ? and idcompetition = ?");
+        PreparedStatement psSelect = c.prepareStatement("delete from competitionparticipants where idcompetitor = ? and idcompetition = ?");
+        psSelect.setInt(1, competitor.getId());
+        psSelect.setInt(2, competition.getId());
+        
+        psSelect.executeUpdate();
+        
+        psSelect.close();
+        
+        c.close();
+    }
+    
+    public static void addCompetitorInCompetition(ACompetitor competitor, Competition competition) throws SQLException {
+        Connection c = DataBaseConnection.getConnection();
+        PreparedStatement psSelect = c.prepareStatement("insert into competitionparticipants(idcompetitor, idcompetition) values (?, ?)");
         psSelect.setInt(1, competitor.getId());
         psSelect.setInt(2, competition.getId());
         
