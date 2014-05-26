@@ -10,6 +10,8 @@ import java.util.GregorianCalendar;
 
 import fr.uv1.bettingServices.bd.BetDAO;
 import fr.uv1.bettingServices.bd.CompetitionDAO;
+import fr.uv1.bettingServices.bd.CompetitorPlayerDAO;
+import fr.uv1.bettingServices.bd.CompetitorTeamDAO;
 import fr.uv1.bettingServices.bd.SubscriberDAO;
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
@@ -76,6 +78,8 @@ public class BettingSoft implements Betting {
 		try {
 			this.subscribers = SubscriberDAO.findAll();
 			this.competitions = CompetitionDAO.findAll();
+			this.competitors = (Collection)CompetitorPlayerDAO.findAll();
+			this.teams = (Collection)CompetitorTeamDAO.findAll();
 		} catch (SQLException | CompetitionException e) {
 			e.printStackTrace();
 		}
