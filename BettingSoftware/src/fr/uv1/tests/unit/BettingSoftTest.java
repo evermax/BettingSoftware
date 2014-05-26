@@ -1,10 +1,15 @@
 package fr.uv1.tests.unit;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.uv1.bettingServices.BettingSoft;
@@ -16,15 +21,30 @@ import fr.uv1.bettingServices.exceptions.CompetitionException;
 import fr.uv1.bettingServices.exceptions.ExistingCompetitionException;
 import fr.uv1.bettingServices.exceptions.ExistingSubscriberException;
 import fr.uv1.bettingServices.exceptions.SubscriberException;
+import fr.uv1.utils.DataBaseConnection;
 import fr.uv1.utils.MyCalendar;
 
 public class BettingSoftTest {
 
     private BettingSoft bettingProgram;
+    private static Connection connection;
+    
+    @BeforeClass
+    public static void openConnection() throws SQLException {
+        connection = DataBaseConnection.getConnection();
+    }
     
     @Before
-    public void setMyCalendarToCurrentDate() {
+    public void setMyCalendarToCurrentDate() throws SQLException {
         MyCalendar.setDate();
+        PreparedStatement psRemove = connection.prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
+        psRemove.executeUpdate();
+        psRemove.close();
+    }
+    
+    @AfterClass
+    public static void closeConnection() throws SQLException {
+        connection.close();
     }
 
     @Test(expected = BadParametersException.class)
