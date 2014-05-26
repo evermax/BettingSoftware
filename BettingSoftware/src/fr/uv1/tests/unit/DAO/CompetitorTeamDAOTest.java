@@ -11,6 +11,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.uv1.bettingServices.CompetitorTeam;
+import fr.uv1.bettingServices.bd.CompetitorTeamDAO;
+import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.utils.DataBaseConnection;
 import fr.uv1.utils.MyCalendar;
 
@@ -36,9 +39,13 @@ public class CompetitorTeamDAOTest {
         connection.close();
     }
 
-    @Test
-    public void test() {
-        fail("Not yet implemented");
+    @Test (expected = SQLException.class)
+    public void testAddAnExistingCompetitor() throws BadParametersException, SQLException {
+        CompetitorTeam c1 = new CompetitorTeam("RedBull");
+        CompetitorTeam c2 = new CompetitorTeam("RedBull");
+        
+        CompetitorTeamDAO.persist(c1);
+        CompetitorTeamDAO.persist(c2);
     }
 
 }

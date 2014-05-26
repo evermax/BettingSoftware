@@ -5,12 +5,16 @@ import static org.junit.Assert.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.GregorianCalendar;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.uv1.bettingServices.CompetitorPlayer;
+import fr.uv1.bettingServices.bd.CompetitorPlayerDAO;
+import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.utils.DataBaseConnection;
 import fr.uv1.utils.MyCalendar;
 
@@ -37,9 +41,13 @@ public class CompetitorPlayerDAOTest {
         connection.close();
     }
 
-    @Test
-    public void test() {
-        fail("Not yet implemented");
+    @Test (expected = SQLException.class)
+    public void testAddAnExistingCompetitor() throws BadParametersException, SQLException {
+        CompetitorPlayer c1 = new CompetitorPlayer("Bolt", "Usain", new GregorianCalendar(1986,07,21));
+        CompetitorPlayer c2 = new CompetitorPlayer("Bolt", "Usain", new GregorianCalendar(1986,07,21));
+        
+        CompetitorPlayerDAO.persist(c1);
+        CompetitorPlayerDAO.persist(c2);
     }
 
 }
