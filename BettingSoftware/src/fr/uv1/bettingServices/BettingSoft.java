@@ -78,8 +78,8 @@ public class BettingSoft implements Betting {
 		try {
 			this.subscribers = SubscriberDAO.findAll();
 			this.competitions = CompetitionDAO.findAll();
-			this.competitors = (Collection)CompetitorPlayerDAO.findAll();
-			this.teams = (Collection)CompetitorTeamDAO.findAll();
+			this.competitors = CompetitorPlayerDAO.findAll();
+			this.teams = CompetitorTeamDAO.findAll();
 		} catch (SQLException | CompetitionException e) {
 			e.printStackTrace();
 		}
@@ -405,6 +405,12 @@ public class BettingSoft implements Betting {
 		} else {
 			CompetitorPlayer comp = new CompetitorPlayer(lastName, firstName,
 					date);
+			try {
+                comp = CompetitorPlayerDAO.persist(comp);
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 			competitors.add(comp);
 			return comp;
 		}
@@ -431,6 +437,14 @@ public class BettingSoft implements Betting {
 			return t;
 		} else {
 			CompetitorTeam team = new CompetitorTeam(name);
+			
+			try {
+                team = CompetitorTeamDAO.persist(team);
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+			
 			teams.add(team);
 			return team;
 		}
@@ -448,6 +462,12 @@ public class BettingSoft implements Betting {
 			throw new ExistingCompetitionException();
 		}
 		comp.deleteCompetitor(competitor);
+		try {
+            CompetitionDAO.removeCompetitorFromCompetition((ACompetitor)competitor, comp);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 	@Override

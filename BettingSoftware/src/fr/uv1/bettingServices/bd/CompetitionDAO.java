@@ -86,6 +86,20 @@ public class CompetitionDAO {
 
         return competition;
     }
+    
+    public static void removeCompetitorFromCompetition(ACompetitor competitor, Competition competition) throws SQLException {
+        Connection c = DataBaseConnection.getConnection();
+        PreparedStatement psSelect = c.prepareStatement("DELETE FROM competitionparticipants where idcompetitor = ? and idcompetition = ?");
+        psSelect.setInt(1, competitor.getId());
+        psSelect.setInt(2, competition.getId());
+        
+        psSelect.executeUpdate();
+        
+        psSelect.close();
+        
+        c.close();
+    }
+    
 
     public static List<Competition> findAll() throws SQLException,
             BadParametersException, CompetitionException {
