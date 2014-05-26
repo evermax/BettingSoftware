@@ -161,12 +161,12 @@ public class GlobalTest {
                 pwdSubs1);
         bettingProgram.betOnPodium(3600, competition1Name, c2, c3, c1, subs2,
                 pwdSubs2);
-        // bettingProgram.betOnWinner(4000, competition2Name, c2, subs1,
-        // pwdSubs1);
-        // bettingProgram
-        // .betOnWinner(14000, competition2Name, c3, subs2, pwdSubs2);
-        // bettingProgram
-        // .betOnWinner(14000, competition2Name, c2, subs2, pwdSubs2);
+        bettingProgram.betOnWinner(4000, competition2Name, c2, subs1,
+         pwdSubs1);
+        bettingProgram
+         .betOnWinner(14000, competition2Name, c3, subs2, pwdSubs2);
+        bettingProgram
+         .betOnWinner(14000, competition2Name, c2, subs2, pwdSubs2);
 
         System.out.println("Liste des paris sur la compétition 1 :\n"
                 + bettingProgram.consultBetsCompetition(competition1Name));
@@ -176,6 +176,6 @@ public class GlobalTest {
          */
         MyCalendar.setDate(new MyCalendar(2014, 8, 15));
         bettingProgram.settlePodium(competition1Name, c1, c2, c3, mgr_password);
-        //bettingProgram.settleWinner(competition2Name, c2, mgr_password);
+        bettingProgram.settleWinner(competition2Name, c2, mgr_password);
     }
 }
