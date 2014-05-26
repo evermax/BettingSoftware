@@ -9,6 +9,8 @@ public class Bet {
 	private Competitor second;
 	private Competitor third;
 	private boolean isBetOnPodium;
+	
+	private Integer id;
 
 	/**
 	 * Constructeur du pari sur un gagnant
@@ -31,6 +33,7 @@ public class Bet {
 		this.second = null;
 		this.third = null;
 		this.isBetOnPodium = false;
+		this.id = null;
 	}
 
 	/**
@@ -51,10 +54,7 @@ public class Bet {
 	 */
 	public Bet(long tokenNumber, Subscriber subscriber, Competition competition,
 			Competitor winner, Competitor second, Competitor third) {
-		this.tokenNumber = tokenNumber;
-		this.subscriber = subscriber;
-		this.competition = competition;
-		this.winner = winner;
+		this(tokenNumber, subscriber, competition, winner);
 		this.second = second;
 		this.third = third;
 		this.isBetOnPodium = true;

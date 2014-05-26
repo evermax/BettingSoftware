@@ -21,7 +21,7 @@ public class Competition {
 
     private String name;
     private Calendar closingDate;
-    private int id;
+    private Integer id;
     /**
      * Booléen indiquant si la compétition a été soldée ou non
      */
