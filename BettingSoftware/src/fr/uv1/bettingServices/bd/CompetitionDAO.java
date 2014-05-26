@@ -16,6 +16,7 @@ import fr.uv1.bettingServices.CompetitorPlayer;
 import fr.uv1.bettingServices.CompetitorTeam;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.CompetitionException;
+import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
 import fr.uv1.utils.DataBaseConnection;
 
 public class CompetitionDAO {
@@ -86,33 +87,36 @@ public class CompetitionDAO {
 
         return competition;
     }
-    
-    public static void removeCompetitorFromCompetition(ACompetitor competitor, Competition competition) throws SQLException {
+
+    public static void removeCompetitorFromCompetition(ACompetitor competitor,
+            Competition competition) throws SQLException {
         Connection c = DataBaseConnection.getConnection();
-        PreparedStatement psSelect = c.prepareStatement("delete from competitionparticipants where idcompetitor = ? and idcompetition = ?");
+        PreparedStatement psSelect = c
+                .prepareStatement("delete from competitionparticipants where idcompetitor = ? and idcompetition = ?");
         psSelect.setInt(1, competitor.getId());
         psSelect.setInt(2, competition.getId());
-        
+
         psSelect.executeUpdate();
-        
+
         psSelect.close();
-        
+
         c.close();
     }
-    
-    public static void addCompetitorInCompetition(ACompetitor competitor, Competition competition) throws SQLException {
+
+    public static void addCompetitorInCompetition(ACompetitor competitor,
+            Competition competition) throws SQLException {
         Connection c = DataBaseConnection.getConnection();
-        PreparedStatement psSelect = c.prepareStatement("insert into competitionparticipants(idcompetitor, idcompetition) values (?, ?)");
+        PreparedStatement psSelect = c
+                .prepareStatement("insert into competitionparticipants(idcompetitor, idcompetition) values (?, ?)");
         psSelect.setInt(1, competitor.getId());
         psSelect.setInt(2, competition.getId());
-        
+
         psSelect.executeUpdate();
-        
+
         psSelect.close();
-        
+
         c.close();
     }
-    
 
     public static List<Competition> findAll() throws SQLException,
             BadParametersException, CompetitionException {
@@ -138,6 +142,14 @@ public class CompetitionDAO {
                 boolean isTeam = resultCompetitorId.getBoolean("isteam");
                 if (!isTeam) {
                     competitors.add(CompetitorPlayerDAO.findById(idCompetitor));
+                } else {
+                    try {
+                        competitors.add(CompetitorTeamDAO
+                                .findById(idCompetitor));
+                    } catch (ExistingCompetitorException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -177,6 +189,13 @@ public class CompetitionDAO {
                 boolean isTeam = resultCompetitorId.getBoolean("isteam");
                 if (!isTeam) {
                     competitors.add(CompetitorPlayerDAO.findById(idCompetitor));
+                } else {
+                    try {
+                        competitors.add(CompetitorTeamDAO.findById(idCompetitor));
+                    } catch (ExistingCompetitorException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
 
             }

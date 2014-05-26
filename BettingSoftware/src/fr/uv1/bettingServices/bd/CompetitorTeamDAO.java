@@ -100,8 +100,6 @@ public class CompetitorTeamDAO {
         ResultSet resultSet = psSelect.executeQuery();
         List<Competitor> competitorTeams = new ArrayList<Competitor>();
         while (resultSet.next()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(resultSet.getDate("birthdate"));
             competitorTeams.add(new CompetitorTeam(resultSet
                     .getInt("idcompetitor"), resultSet.getString("name")));
         }
