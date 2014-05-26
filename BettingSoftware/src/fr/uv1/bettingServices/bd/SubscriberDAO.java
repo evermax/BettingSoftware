@@ -83,6 +83,17 @@ public class SubscriberDAO {
 
         return subscribers;
     }
+    
+    public static void changeTokens(Subscriber s, long tokens) throws SQLException {
+        Connection c = DataBaseConnection.getConnection();
+        PreparedStatement psUpdateToken = c.prepareStatement("update subscriber set tokens = tokens + ? where idSubscriber = ");
+        psUpdateToken.setLong(1, tokens);
+        psUpdateToken.setInt(2, s.getId());
+        
+        psUpdateToken.executeUpdate();
+        psUpdateToken.close();
+        c.close();
+    }
 
     public static Subscriber findById(int id) throws SQLException {
         Connection c = DataBaseConnection.getConnection();

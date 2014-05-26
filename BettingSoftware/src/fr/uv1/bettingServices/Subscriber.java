@@ -1,10 +1,12 @@
 package fr.uv1.bettingServices;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import fr.uv1.bettingServices.bd.SubscriberDAO;
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.SubscriberException;
@@ -316,6 +318,12 @@ public class Subscriber implements Serializable {
 			throw new BadParametersException();
 		}
 		tokens += numberTokens;
+		try {
+            SubscriberDAO.changeTokens(this, numberTokens);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 	public void debitTokens(long numberTokens) throws BadParametersException,
@@ -328,6 +336,12 @@ public class Subscriber implements Serializable {
 		}
 
 		tokens -= numberTokens;
+        try {
+            SubscriberDAO.changeTokens(this, -numberTokens);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 	public long getTokens() {
