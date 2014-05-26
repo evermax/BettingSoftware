@@ -4,18 +4,18 @@ import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
 
 public abstract class ACompetitor implements Competitor {
-	
-	protected String name;
-	protected Integer id;
 
-	public ACompetitor(String name) throws BadParametersException {
-		if (name == null) {
-			throw new BadParametersException();
-		}
-		this.name = name;
-	}
-	
-	public ACompetitor(int id, String name) throws BadParametersException {
+    protected String name;
+    protected Integer id;
+
+    public ACompetitor(String name) throws BadParametersException {
+        if (name == null) {
+            throw new BadParametersException();
+        }
+        this.name = name;
+    }
+
+    public ACompetitor(int id, String name) throws BadParametersException {
         if (name == null) {
             throw new BadParametersException();
         }
@@ -23,11 +23,11 @@ public abstract class ACompetitor implements Competitor {
         this.id = id;
     }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public int getId() {
+    public int getId() {
         return id;
     }
 
@@ -36,24 +36,24 @@ public abstract class ACompetitor implements Competitor {
     }
 
     @Override
-	public boolean hasValidName() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public boolean hasValidName() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public void addMember(Competitor member)
-			throws ExistingCompetitorException, BadParametersException {
-		// TODO Auto-generated method stub
+    @Override
+    public void addMember(Competitor member)
+            throws ExistingCompetitorException, BadParametersException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void deleteMember(Competitor member) throws BadParametersException,
-			ExistingCompetitorException {
-		// TODO Auto-generated method stub
+    @Override
+    public void deleteMember(Competitor member) throws BadParametersException,
+            ExistingCompetitorException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
     @Override
     public int hashCode() {

@@ -21,6 +21,12 @@ import fr.uv1.bettingServices.exceptions.SubscriberException;
 import fr.uv1.utils.DataBaseConnection;
 import fr.uv1.utils.MyCalendar;
 
+/**
+ * Classe effectuant un test global du fonctionnement de l'application
+ * 
+ * @author Maxime
+ * 
+ */
 public class GlobalTest {
     public static String mgr_password = "Kangourou";
     private static BettingSoft bettingProgram;
@@ -33,6 +39,7 @@ public class GlobalTest {
             CompetitionException, ExistingCompetitorException {
         try {
             connection = DataBaseConnection.getConnection();
+            // Vidage de la base de données avant de débuter les tests
             psRemove = connection
                     .prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
             psRemove.executeUpdate();
@@ -65,8 +72,8 @@ public class GlobalTest {
 
         // Joueur 3
         String subs3 = "Tatane";
-        String pwdSubs3 = bettingProgram.subscribe("Zlatan", "Ibra", subs3,
-                "24-12-1975", mgr_password);
+        bettingProgram.subscribe("Zlatan", "Ibra", subs3, "24-12-1975",
+                mgr_password);
 
         System.out.println("Inscription de 3 personnes :\n"
                 + bettingProgram.listSubscribers(mgr_password) + "\n\n");
@@ -161,12 +168,9 @@ public class GlobalTest {
                 pwdSubs1);
         bettingProgram.betOnPodium(3600, competition1Name, c2, c3, c1, subs2,
                 pwdSubs2);
-        bettingProgram.betOnWinner(2000, competition2Name, c2, subs1,
-         pwdSubs1);
-        bettingProgram
-         .betOnWinner(4000, competition2Name, c3, subs1, pwdSubs1);
-        bettingProgram
-         .betOnWinner(4000, competition2Name, c2, subs2, pwdSubs2);
+        bettingProgram.betOnWinner(2000, competition2Name, c2, subs1, pwdSubs1);
+        bettingProgram.betOnWinner(4000, competition2Name, c3, subs1, pwdSubs1);
+        bettingProgram.betOnWinner(4000, competition2Name, c2, subs2, pwdSubs2);
 
         System.out.println("Liste des paris sur la compétition 1 :\n"
                 + bettingProgram.consultBetsCompetition(competition1Name));

@@ -6,12 +6,12 @@ package fr.uv1.utils;
  */
 public class BettingPasswordsVerifier {
 
-	public static boolean verify(String password) {
-		if (password == null)
-			return false;
-		if (password.toCharArray().length < Constraints.LONG_PWD)
-			return false;
+    public static boolean verify(String password) {
+        if (password == null)
+            return false;
+        if (password.toCharArray().length < Constraints.LONG_PWD)
+            return false;
 
-		return password.matches("[[0-9]*|[a-zA-Z]*]*");
-	}
+        return password.matches("[[0-9]*|[a-zA-Z]*]*");
+    }
 }

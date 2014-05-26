@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import fr.uv1.bettingServices.ACompetitor;
@@ -91,8 +90,9 @@ public class CompetitorTeamDAO {
 
         return comp;
     }
-    
-    public static void addTeamMember(int idCompetitorTeam, int idCompetitorPlayer) throws SQLException {
+
+    public static void addTeamMember(int idCompetitorTeam,
+            int idCompetitorPlayer) throws SQLException {
         Connection connection = DataBaseConnection.getConnection();
         try {
             PreparedStatement psAddMember = connection

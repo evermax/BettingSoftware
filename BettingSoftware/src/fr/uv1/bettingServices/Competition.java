@@ -111,7 +111,7 @@ public class Competition {
 
     public Competition(int id, String name, Calendar closingDate,
             Collection<Competitor> competitors) throws BadParametersException,
-            CompetitionException{
+            CompetitionException {
         this(name, closingDate, competitors);
         this.id = id;
         try {
@@ -155,12 +155,12 @@ public class Competition {
     }
 
     public boolean areCompetitors(Competitor... comps) {
-    	for (Competitor comp : comps) {
-    		if (!competitors.contains(comp)) {
-    			return false;
-    		}
-    	}
-    	return true;
+        for (Competitor comp : comps) {
+            if (!competitors.contains(comp)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void deleteCompetitor(Competitor comp) throws CompetitionException,
@@ -193,7 +193,7 @@ public class Competition {
             throw new CompetitionException();
         }
         Bet b = new Bet(numberTokens, s, this, winner);
-    	s.debitTokens(numberTokens);
+        s.debitTokens(numberTokens);
 
         this.bets.add(b);
         return b;
@@ -273,12 +273,12 @@ public class Competition {
                     }
                 }
             }
-        } 
+        }
     }
 
     public void settlePodium(Competitor winner, Competitor second,
-            Competitor third)
-            throws CompetitionException, AuthenticationException {
+            Competitor third) throws CompetitionException,
+            AuthenticationException {
         if (!isClosed())
             throw new CompetitionException();
         if (winner.equals(second) || winner.equals(third)
@@ -335,19 +335,19 @@ public class Competition {
     }
 
     public void deleteBets(Subscriber s) {
-    	Iterator<Bet> iter = bets.iterator();
-    	while (iter.hasNext()) {
-    		Bet bet = iter.next();
-    		if (bet.getSubscriber().equals(s)) {
-    		    try {
+        Iterator<Bet> iter = bets.iterator();
+        while (iter.hasNext()) {
+            Bet bet = iter.next();
+            if (bet.getSubscriber().equals(s)) {
+                try {
                     BetDAO.delete(bet);
                 } catch (SQLException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-    			iter.remove();
-    		}
-    	}
+                iter.remove();
+            }
+        }
     }
 
     public ArrayList<String> consultBets() {

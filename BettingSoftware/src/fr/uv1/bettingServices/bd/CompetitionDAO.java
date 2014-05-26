@@ -9,8 +9,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
-import fr.uv1.bettingServices.Competition;
 import fr.uv1.bettingServices.ACompetitor;
+import fr.uv1.bettingServices.Competition;
 import fr.uv1.bettingServices.Competitor;
 import fr.uv1.bettingServices.CompetitorPlayer;
 import fr.uv1.bettingServices.CompetitorTeam;
@@ -191,7 +191,8 @@ public class CompetitionDAO {
                     competitors.add(CompetitorPlayerDAO.findById(idCompetitor));
                 } else {
                     try {
-                        competitors.add(CompetitorTeamDAO.findById(idCompetitor));
+                        competitors.add(CompetitorTeamDAO
+                                .findById(idCompetitor));
                     } catch (ExistingCompetitorException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();

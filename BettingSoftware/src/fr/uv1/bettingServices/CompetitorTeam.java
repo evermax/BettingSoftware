@@ -20,7 +20,7 @@ public class CompetitorTeam extends ACompetitor {
         }
         members = new ArrayList<Competitor>();
     }
-    
+
     public CompetitorTeam(int id, String name) throws BadParametersException {
         super(id, name);
         if (!name.matches(REGEX_NAME)) {
@@ -42,26 +42,27 @@ public class CompetitorTeam extends ACompetitor {
     public ArrayList<Competitor> getMembers() {
         return members;
     }
-    
+
     @Override
     public void addMember(Competitor member)
             throws ExistingCompetitorException, BadParametersException {
         if (member == null || member == this) {
             throw new BadParametersException();
         }
-        
+
         if (members.contains(member)) {
             throw new ExistingCompetitorException();
         }
         members.add(member);
         try {
-            CompetitorTeamDAO.addTeamMember(getId(), ((ACompetitor)member).getId());
+            CompetitorTeamDAO.addTeamMember(getId(),
+                    ((ACompetitor) member).getId());
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void deleteMember(Competitor member) throws BadParametersException,
             ExistingCompetitorException {

@@ -25,9 +25,9 @@ public class CompetitorPlayer extends ACompetitor {
         this.firstName = firstName;
         this.borndate = borndate;
     }
-    
-    public CompetitorPlayer(int id, String lastName, String firstName, Calendar borndate)
-            throws BadParametersException {
+
+    public CompetitorPlayer(int id, String lastName, String firstName,
+            Calendar borndate) throws BadParametersException {
         this(lastName, firstName, borndate);
         this.id = id;
     }
@@ -85,6 +85,7 @@ public class CompetitorPlayer extends ACompetitor {
         return "CompetitorPlayer [first name = " + firstName + ", born date = "
                 + borndate.get(GregorianCalendar.DAY_OF_MONTH) + "-"
                 + borndate.get(GregorianCalendar.MONTH) + "-"
-                + borndate.get(GregorianCalendar.YEAR) + ", name = " + name + "]\n";
+                + borndate.get(GregorianCalendar.YEAR) + ", name = " + name
+                + "]\n";
     }
 }

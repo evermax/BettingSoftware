@@ -106,6 +106,9 @@ public class BetDAO {
 
     }
 
+    /**
+     * Retourne tous les paris associés à une compétition
+     */
     public static List<Bet> findByCompetition(Competition competition)
             throws SQLException, BadParametersException {
         Connection connection = DataBaseConnection.getConnection();
@@ -180,6 +183,10 @@ public class BetDAO {
         c.close();
     }
 
+    /*
+     * Fonction qui retourne un compétiteur à partir de son id, indépendement du
+     * fait que ce soit un joueur ou une équipe
+     */
     private static Competitor findCompetitorById(int id) throws SQLException,
             BadParametersException {
         Connection c = DataBaseConnection.getConnection();

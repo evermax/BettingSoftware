@@ -28,20 +28,21 @@ public class BettingSoftTest {
 
     private BettingSoft bettingProgram;
     private static Connection connection;
-    
+
     @BeforeClass
     public static void openConnection() throws SQLException {
         connection = DataBaseConnection.getConnection();
     }
-    
+
     @Before
     public void setMyCalendarToCurrentDate() throws SQLException {
         MyCalendar.setDate();
-        PreparedStatement psRemove = connection.prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
+        PreparedStatement psRemove = connection
+                .prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
         psRemove.executeUpdate();
         psRemove.close();
     }
-    
+
     @AfterClass
     public static void closeConnection() throws SQLException {
         connection.close();
@@ -66,11 +67,12 @@ public class BettingSoftTest {
     @Test
     public void testBetting() throws BadParametersException,
             AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+            SubscriberException, ExistingCompetitionException,
+            CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
-        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
-                mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans",
+                "13-03-1990", mgr_pwd);
         bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -87,17 +89,19 @@ public class BettingSoftTest {
         bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
                 "BlueJeans", passSub1);
         System.out.println(bettingProgram.listCompetitions());
-        System.out.println(bettingProgram.consultBetsCompetition("100mOlympique"));
+        System.out.println(bettingProgram
+                .consultBetsCompetition("100mOlympique"));
     }
-    
+
     @Test(expected = CompetitionException.class)
     public void testBettingNoSuchCompetitor() throws BadParametersException,
             AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+            SubscriberException, ExistingCompetitionException,
+            CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
-        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
-                mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans",
+                "13-03-1990", mgr_pwd);
         bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -116,15 +120,16 @@ public class BettingSoftTest {
         bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c4,
                 "BlueJeans", passSub1);
     }
-    
+
     @Test(expected = CompetitionException.class)
     public void testBettingCompetitionClosed() throws BadParametersException,
             AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+            SubscriberException, ExistingCompetitionException,
+            CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
-        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
-                mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans",
+                "13-03-1990", mgr_pwd);
         bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -141,11 +146,12 @@ public class BettingSoftTest {
         bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
                 "BlueJeans", passSub1);
     }
-    
+
     @Test(expected = AuthenticationException.class)
     public void testBettingIncorrectPassword() throws BadParametersException,
             AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+            SubscriberException, ExistingCompetitionException,
+            CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
         bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
@@ -166,15 +172,16 @@ public class BettingSoftTest {
         bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
                 "BlueJeans", "Coucou");
     }
-    
+
     @Test(expected = SubscriberException.class)
     public void testBettingNotEnoughToken() throws BadParametersException,
             AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+            SubscriberException, ExistingCompetitionException,
+            CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
-        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
-                mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans",
+                "13-03-1990", mgr_pwd);
         bettingProgram.creditSubscriber("BlueJeans", 100, mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -191,15 +198,16 @@ public class BettingSoftTest {
         bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
                 "BlueJeans", passSub1);
     }
-    
+
     @Test(expected = AuthenticationException.class)
     public void testBettingNoSuchSubscriber() throws BadParametersException,
             AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+            SubscriberException, ExistingCompetitionException,
+            CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
-        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
-                mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans",
+                "13-03-1990", mgr_pwd);
         bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -216,15 +224,16 @@ public class BettingSoftTest {
         bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
                 "BlueJeas", passSub1);
     }
-    
+
     @Test(expected = BadParametersException.class)
-    public void testBettingIncorrectNumberOfToken() throws BadParametersException,
-            AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+    public void testBettingIncorrectNumberOfToken()
+            throws BadParametersException, AuthenticationException,
+            ExistingSubscriberException, SubscriberException,
+            ExistingCompetitionException, CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
-        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
-                mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans",
+                "13-03-1990", mgr_pwd);
         bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -241,15 +250,16 @@ public class BettingSoftTest {
         bettingProgram.betOnPodium(-200, "100mOlympique", c1, c2, c3,
                 "BlueJeans", passSub1);
     }
-    
+
     @Test(expected = CompetitionException.class)
-    public void testBettingSubscriberIsACompetitor() throws BadParametersException,
-            AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+    public void testBettingSubscriberIsACompetitor()
+            throws BadParametersException, AuthenticationException,
+            ExistingSubscriberException, SubscriberException,
+            ExistingCompetitionException, CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
-        String passSub1 = bettingProgram.subscribe("Bolt", "Usain", "BlueJeans", "21-07-1986",
-                mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bolt", "Usain",
+                "BlueJeans", "21-07-1986", mgr_pwd);
         bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -266,15 +276,16 @@ public class BettingSoftTest {
         bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
                 "BlueJeans", passSub1);
     }
-    
+
     @Test(expected = AuthenticationException.class)
-    public void testSettlePodiumIncorrectManagerPassword() throws BadParametersException,
-            AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+    public void testSettlePodiumIncorrectManagerPassword()
+            throws BadParametersException, AuthenticationException,
+            ExistingSubscriberException, SubscriberException,
+            ExistingCompetitionException, CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
-        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
-                mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans",
+                "13-03-1990", mgr_pwd);
         bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -294,11 +305,12 @@ public class BettingSoftTest {
         MyCalendar.setDate(new MyCalendar(2017, 04, 13));
         bettingProgram.settlePodium(competitionName, c1, c2, c3, "Chameau");
     }
-    
+
     @Test(expected = ExistingCompetitionException.class)
-    public void testSettlePodiumCompetitionDoesNotExist() throws BadParametersException,
-            AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+    public void testSettlePodiumCompetitionDoesNotExist()
+            throws BadParametersException, AuthenticationException,
+            ExistingSubscriberException, SubscriberException,
+            ExistingCompetitionException, CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -310,15 +322,16 @@ public class BettingSoftTest {
         MyCalendar.setDate(new MyCalendar(2017, 04, 13));
         bettingProgram.settlePodium("Coucou", c1, c2, c3, mgr_pwd);
     }
-    
+
     @Test(expected = CompetitionException.class)
-    public void testSettlePodiumSameCompetitorOnPodium() throws BadParametersException,
-            AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+    public void testSettlePodiumSameCompetitorOnPodium()
+            throws BadParametersException, AuthenticationException,
+            ExistingSubscriberException, SubscriberException,
+            ExistingCompetitionException, CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
-        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
-                mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans",
+                "13-03-1990", mgr_pwd);
         bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram
@@ -338,11 +351,12 @@ public class BettingSoftTest {
         MyCalendar.setDate(new MyCalendar(2017, 04, 13));
         bettingProgram.settlePodium(competitionName, c1, c2, c2, mgr_pwd);
     }
-    
+
     @Test(expected = CompetitionException.class)
-    public void testSettlePodiumNoCompetitorInCompetition() throws BadParametersException,
-            AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+    public void testSettlePodiumNoCompetitorInCompetition()
+            throws BadParametersException, AuthenticationException,
+            ExistingSubscriberException, SubscriberException,
+            ExistingCompetitionException, CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
@@ -360,15 +374,16 @@ public class BettingSoftTest {
         MyCalendar.setDate(new MyCalendar(2017, 04, 13));
         bettingProgram.settlePodium(competitionName, c1, c2, c3, mgr_pwd);
     }
-    
+
     @Test(expected = CompetitionException.class)
-    public void testSettlePodiumCompetitionStillOpened() throws BadParametersException,
-            AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException {
+    public void testSettlePodiumCompetitionStillOpened()
+            throws BadParametersException, AuthenticationException,
+            ExistingSubscriberException, SubscriberException,
+            ExistingCompetitionException, CompetitionException {
         String mgr_pwd = "Kangourou";
         bettingProgram = new BettingSoft(mgr_pwd);
-        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans", "13-03-1990",
-                mgr_pwd);
+        String passSub1 = bettingProgram.subscribe("Bleu", "Jean", "BlueJeans",
+                "13-03-1990", mgr_pwd);
         bettingProgram.creditSubscriber("BlueJeans", 1000, mgr_pwd);
         Collection<Competitor> competitors = new ArrayList<Competitor>();
         CompetitorPlayer c1 = (CompetitorPlayer) bettingProgram

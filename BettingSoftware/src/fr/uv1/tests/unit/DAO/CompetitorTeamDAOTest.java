@@ -18,30 +18,32 @@ import fr.uv1.utils.MyCalendar;
 public class CompetitorTeamDAOTest {
 
     private static Connection connection;
-    
+
     @BeforeClass
     public static void openConnection() throws SQLException {
         connection = DataBaseConnection.getConnection();
     }
-    
+
     @Before
     public void setMyCalendarToCurrentDate() throws SQLException {
         MyCalendar.setDate();
-        PreparedStatement psRemove = connection.prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
+        PreparedStatement psRemove = connection
+                .prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
         psRemove.executeUpdate();
         psRemove.close();
     }
-    
+
     @AfterClass
     public static void closeConnection() throws SQLException {
         connection.close();
     }
 
-    @Test (expected = SQLException.class)
-    public void testAddAnExistingCompetitor() throws BadParametersException, SQLException {
+    @Test(expected = SQLException.class)
+    public void testAddAnExistingCompetitor() throws BadParametersException,
+            SQLException {
         CompetitorTeam c1 = new CompetitorTeam("RedBull");
         CompetitorTeam c2 = new CompetitorTeam("RedBull");
-        
+
         CompetitorTeamDAO.persist(c1);
         CompetitorTeamDAO.persist(c2);
     }
