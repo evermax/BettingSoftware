@@ -26,7 +26,7 @@ public class BetDAO {
         try {
             connection.setAutoCommit(false);
             PreparedStatement psPersist = connection
-                    .prepareStatement("insert into bets (idsubscriber, idcompetition, tokens, idcompetitor1, idcompetitor2, idcompetitor3) values (?, ?, ?, ?, ?, ?)");
+                    .prepareStatement("insert into bet (idsubscriber, idcompetition, tokens, idcompetitor1, idcompetitor2, idcompetitor3) values (?, ?, ?, ?, ?, ?)");
             psPersist.setInt(1, bet.getSubscriber().getId());
             psPersist.setInt(2, bet.getCompetition().getId());
             psPersist.setLong(3, bet.getTokenNumber());
@@ -74,7 +74,7 @@ public class BetDAO {
             CompetitionException, SQLException {
         Connection connection = DataBaseConnection.getConnection();
         PreparedStatement psSelect = connection
-                .prepareStatement("select * from bets");
+                .prepareStatement("select * from bet");
         ResultSet resultSet = psSelect.executeQuery();
         List<Bet> bets = new ArrayList<Bet>();
         while (resultSet.next()) {
@@ -96,11 +96,6 @@ public class BetDAO {
 
             bets.add(new Bet(idBet, tokens, subscriber, competition,
                     competitor1, competitor2, competitor3));
-            // TODO Récupérer les compétiteurs et créer l'objet Bet
-            // Faut-il effectuer une requête ici pour chaque compétiteur pour
-            // vérifier d'abord si c'est une équipe ou un joueur ? On ne peut
-            // pas appeler findById de CompetitorPlayerDAO ou de
-            // CompetitorTeamDAO tant qu'on ne sait pas de quel type il s'agit..
 
         }
 
@@ -115,7 +110,7 @@ public class BetDAO {
             throws SQLException, BadParametersException {
         Connection connection = DataBaseConnection.getConnection();
         PreparedStatement psSelect = connection
-                .prepareStatement("select * from bets where idcompetition = ?");
+                .prepareStatement("select * from bet where idcompetition = ?");
         psSelect.setInt(1, competition.getId());
         ResultSet resultSet = psSelect.executeQuery();
         List<Bet> bets = new ArrayList<Bet>();
