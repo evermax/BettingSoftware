@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import fr.uv1.bettingServices.Competitor;
 import fr.uv1.bettingServices.CompetitorPlayer;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.utils.DataBaseConnection;
@@ -85,13 +86,13 @@ public class CompetitorPlayerDAO {
         return comp;
     }
 
-    public static List<CompetitorPlayer> findAll() throws SQLException,
+    public static List<Competitor> findAll() throws SQLException,
             BadParametersException {
         Connection c = DataBaseConnection.getConnection();
         PreparedStatement psSelect = c
                 .prepareStatement("select * from competitor where isteam = false order by idcompetitor");
         ResultSet resultSet = psSelect.executeQuery();
-        List<CompetitorPlayer> competitorsPlayers = new ArrayList<CompetitorPlayer>();
+        List<Competitor> competitorsPlayers = new ArrayList<Competitor>();
         while (resultSet.next()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(resultSet.getDate("birthdate"));

@@ -92,13 +92,13 @@ public class CompetitorTeamDAO {
         return comp;
     }
 
-    public static List<CompetitorTeam> findAll() throws SQLException,
+    public static List<Competitor> findAll() throws SQLException,
             BadParametersException {
         Connection c = DataBaseConnection.getConnection();
         PreparedStatement psSelect = c
                 .prepareStatement("select * from competitor where isteam = true order by idcompetitor");
         ResultSet resultSet = psSelect.executeQuery();
-        List<CompetitorTeam> competitorTeams = new ArrayList<CompetitorTeam>();
+        List<Competitor> competitorTeams = new ArrayList<Competitor>();
         while (resultSet.next()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(resultSet.getDate("birthdate"));
