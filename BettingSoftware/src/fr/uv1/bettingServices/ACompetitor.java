@@ -6,7 +6,7 @@ import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
 public abstract class ACompetitor implements Competitor {
 	
 	protected String name;
-	protected int id;
+	protected Integer id;
 
 	public ACompetitor(String name) throws BadParametersException {
 		if (name == null) {

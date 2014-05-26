@@ -56,7 +56,7 @@ public class Subscriber implements Serializable {
 
 	private long tokens = 0;
 	private Calendar birthdate;
-	private int id;
+	private Integer id;
 
 	/*
 	 * the constructor calculates a password for the subscriber. No test on the

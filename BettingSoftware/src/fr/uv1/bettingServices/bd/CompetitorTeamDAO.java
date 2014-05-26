@@ -151,7 +151,7 @@ public class CompetitorTeamDAO {
         return members;
     }
 
-    private static CompetitorTeam findById(int id) throws SQLException,
+    public static CompetitorTeam findById(int id) throws SQLException,
             BadParametersException, ExistingCompetitorException {
         Connection c = DataBaseConnection.getConnection();
         PreparedStatement psSelect = c

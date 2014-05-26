@@ -10,6 +10,7 @@ import java.util.List;
 import fr.uv1.bettingServices.ACompetitor;
 import fr.uv1.bettingServices.Bet;
 import fr.uv1.bettingServices.Competition;
+import fr.uv1.bettingServices.Subscriber;
 import fr.uv1.utils.DataBaseConnection;
 
 public class BetDAO {
@@ -64,15 +65,30 @@ public class BetDAO {
     public static List<Bet> findAll() {
 
     }
-    
+
     public static List<Bet> findByCompetition(Competition competition)
             throws SQLException {
         Connection connection = DataBaseConnection.getConnection();
-        PreparedStatement psSelect = connection.prepareStatement("select * from bets where idcompetition = ?");
+        PreparedStatement psSelect = connection
+                .prepareStatement("select * from bets where idcompetition = ?");
         psSelect.setInt(1, competition.getId());
         ResultSet resultSet = psSelect.executeQuery();
         List<Bet> bets = new ArrayList<Bet>();
-        
+        while (resultSet.next()) {
+            int idBet = resultSet.getInt("idbet");
+            Subscriber subscriber = SubscriberDAO.findById(resultSet
+                    .getInt("idsubscriber"));
+            Competition competition = CompetitionDAO.findById(resultSet
+                    .getInt("idcompetition"));
+            long tokens = resultSet.getLong("tokens");
+            // TODO Récupérer les compétiteurs et créer l'objet Bet
+            // Faut-il effectuer une requête ici pour chaque compétiteur pour
+            // vérifier d'abord si c'est une équipe ou un joueur ? On ne peut
+            // pas appeler findById de CompetitorPlayerDAO ou de
+            // CompetitorTeamDAO tant qu'on ne sait pas de quel type il s'agit..
+
+        }
+
     }
 
     public static void update(Bet bet) {

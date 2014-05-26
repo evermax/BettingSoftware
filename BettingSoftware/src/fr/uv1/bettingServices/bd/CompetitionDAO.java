@@ -50,7 +50,8 @@ public class CompetitionDAO {
             psIdValue.close();
 
             for (Competitor competitor : competition.getCompetitors()) {
-                // TODO : Ne pas persister à nouveau les entrées qui existent déjà
+                // TODO : Ne pas persister à nouveau les entrées qui existent
+                // déjà
                 if (competitor instanceof CompetitorPlayer) {
                     CompetitorPlayerDAO.persist((CompetitorPlayer) competitor);
                 } else {
@@ -122,5 +123,44 @@ public class CompetitionDAO {
         c.close();
 
         return competitions;
+    }
+
+    public static Competition findById(int id) throws BadParametersException,
+            CompetitionException, SQLException {
+        Connection c = DataBaseConnection.getConnection();
+        PreparedStatement psSelect = c
+                .prepareStatement("select * from competition where idcompetition = ?");
+        psSelect.setInt(1, id);
+        ResultSet resultSet = psSelect.executeQuery();
+        Competition competition = null;
+        while (resultSet.next()) {
+            int idCompetition = resultSet.getInt("idcompetition");
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(resultSet.getDate("closingdate"));
+
+            // On récupère la liste des participants à la compétition
+            Collection<Competitor> competitors = new ArrayList<Competitor>();
+            PreparedStatement psCompetitorId = c
+                    .prepareStatement("select idcompetitor, isteam from competitionparticipants natural join competitor where idcompetition = ?");
+            psCompetitorId.setInt(1, idCompetition);
+            ResultSet resultCompetitorId = psCompetitorId.executeQuery();
+            while (resultCompetitorId.next()) {
+                int idCompetitor = resultCompetitorId.getInt("idcompetitor");
+                boolean isTeam = resultCompetitorId.getBoolean("isteam");
+                if (!isTeam) {
+                    competitors.add(CompetitorPlayerDAO.findById(idCompetitor));
+                }
+
+            }
+            competition = new Competition(idCompetition,
+                    resultSet.getString("name"), cal, competitors);
+        }
+        resultSet.close();
+        psSelect.close();
+
+        c.close();
+
+        return competition;
     }
 }
