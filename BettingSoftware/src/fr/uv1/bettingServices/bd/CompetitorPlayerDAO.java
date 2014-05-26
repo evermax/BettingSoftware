@@ -17,6 +17,8 @@ public class CompetitorPlayerDAO {
             throws SQLException {
         Connection connection = DataBaseConnection.getConnection();
         try {
+            Integer id = null;
+            Boolean exist = false;
             connection.setAutoCommit(false);
             PreparedStatement psPersist = connection
                     .prepareStatement("INSERT INTO competitor(name, firstname, birthdate, isteam)  values (?, ?, ?, ?)");
@@ -28,21 +30,34 @@ public class CompetitorPlayerDAO {
 
             psPersist.setBoolean(4, false);
 
-            psPersist.executeUpdate();
+            try {
+                psPersist.executeUpdate();
+            } catch (SQLException e) {
+                PreparedStatement psGetCompetitorID = connection
+                        .prepareStatement("select idcompetitor from competitor where isteam = false and name = ? and firstname = ? and birthdate = ?");
+                psGetCompetitorID.setString(1, comp.getName());
+                psGetCompetitorID.setString(2, comp.getFirstName());
+                psGetCompetitorID.setDate(3, new java.sql.Date(comp
+                        .getBorndate().getTimeInMillis()));
+                ResultSet resultSetID = psGetCompetitorID.executeQuery();
+                id = resultSetID.getInt("idcompetitor");
+                exist = true;
+            }
 
             psPersist.close();
 
-            // Retrieving the value of the id with a request on the
-            // sequence (competitor_idcompetitor_seq).
-            PreparedStatement psIdValue = connection
-                    .prepareStatement("select currval('competitor_idcompetitor_seq') as value_id");
-            ResultSet resultSet = psIdValue.executeQuery();
-            Integer id = null;
-            while (resultSet.next()) {
-                id = resultSet.getInt("value_id");
+            if (!exist) {
+                // Retrieving the value of the id with a request on the
+                // sequence (competitor_idcompetitor_seq).
+                PreparedStatement psIdValue = connection
+                        .prepareStatement("select currval('competitor_idcompetitor_seq') as value_id");
+                ResultSet resultSet = psIdValue.executeQuery();
+                while (resultSet.next()) {
+                    id = resultSet.getInt("value_id");
+                }
+                resultSet.close();
+                psIdValue.close();
             }
-            resultSet.close();
-            psIdValue.close();
             connection.commit();
 
             comp.setId(id);
@@ -62,8 +77,9 @@ public class CompetitorPlayerDAO {
 
         return comp;
     }
-    
-    public static List<CompetitorPlayer> findAll() throws SQLException, BadParametersException {
+
+    public static List<CompetitorPlayer> findAll() throws SQLException,
+            BadParametersException {
         Connection c = DataBaseConnection.getConnection();
         PreparedStatement psSelect = c
                 .prepareStatement("select * from competitor where isteam = false order by idcompetitor");
@@ -72,11 +88,9 @@ public class CompetitorPlayerDAO {
         while (resultSet.next()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(resultSet.getDate("birthdate"));
-            competitorsPlayers
-                    .add(new CompetitorPlayer(resultSet.getInt("idcompetitor"),
-                            resultSet.getString("name"),
-                            resultSet.getString("firstname"),
-                            cal));
+            competitorsPlayers.add(new CompetitorPlayer(resultSet
+                    .getInt("idcompetitor"), resultSet.getString("name"),
+                    resultSet.getString("firstname"), cal));
         }
         resultSet.close();
         psSelect.close();
@@ -84,8 +98,9 @@ public class CompetitorPlayerDAO {
 
         return competitorsPlayers;
     }
-    
-    public static CompetitorPlayer findById(int id) throws SQLException, BadParametersException {
+
+    public static CompetitorPlayer findById(int id) throws SQLException,
+            BadParametersException {
         Connection c = DataBaseConnection.getConnection();
         PreparedStatement psSelect = c
                 .prepareStatement("select * from competitor where idcompetitor = ?");
@@ -96,18 +111,17 @@ public class CompetitorPlayerDAO {
             Calendar cal = Calendar.getInstance();
             cal.setTime(resultSet.getDate("birthdate"));
             competitor = new CompetitorPlayer(resultSet.getInt("idcompetitor"),
-                            resultSet.getString("name"),
-                            resultSet.getString("firstname"),
-                            cal);
+                    resultSet.getString("name"),
+                    resultSet.getString("firstname"), cal);
         }
         resultSet.close();
         psSelect.close();
         c.close();
         return competitor;
     }
-    
+
     public static void update(CompetitorPlayer competitor) throws SQLException {
-     // 1 - Get a database connection from the class 'DatabaseConnection'
+        // 1 - Get a database connection from the class 'DatabaseConnection'
         Connection c = DataBaseConnection.getConnection();
 
         // 2 - Creating a Prepared Statement with the SQL instruction.
@@ -119,7 +133,8 @@ public class CompetitorPlayerDAO {
         // marks).
         psUpdate.setString(1, competitor.getName());
         psUpdate.setString(2, competitor.getFirstName());
-        psUpdate.setDate(3, new java.sql.Date(competitor.getBorndate().getTimeInMillis()));
+        psUpdate.setDate(3, new java.sql.Date(competitor.getBorndate()
+                .getTimeInMillis()));
         psUpdate.setBoolean(4, false);
         psUpdate.setInt(5, competitor.getId());
     }
