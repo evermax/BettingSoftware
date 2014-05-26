@@ -13,13 +13,13 @@ import fr.uv1.utils.DataBaseConnection;
 @SuppressWarnings("unused")
 public class ValidationTests {
     private static Connection connection;
+    private static PreparedStatement psRemove;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 	    
-        PreparedStatement psRemove;
         try {
             connection = DataBaseConnection.getConnection();
             psRemove = connection.prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
