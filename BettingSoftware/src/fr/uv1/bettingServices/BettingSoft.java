@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 
+import fr.uv1.bettingServices.bd.BetDAO;
 import fr.uv1.bettingServices.bd.CompetitionDAO;
 import fr.uv1.bettingServices.bd.SubscriberDAO;
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
@@ -517,7 +518,13 @@ public class BettingSoft implements Betting {
 		if (c == null)
 			throw new ExistingCompetitionException();
 
-		c.betOnWinner(s, pwdSubs, winner, numberTokens);
+		Bet bet = c.betOnWinner(s, pwdSubs, winner, numberTokens);
+		try {
+            BetDAO.persist(bet);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 	@Override
@@ -538,7 +545,12 @@ public class BettingSoft implements Betting {
 		Competition c = searchCompetitionByName(competition);
 		if (c == null)
 			throw new ExistingCompetitionException();
-		c.betOnPodium(s, pwdSubs, winner, second, third, numberTokens);
+		Bet bet = c.betOnPodium(s, pwdSubs, winner, second, third, numberTokens);
+		try {
+            BetDAO.persist(bet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 	}
 

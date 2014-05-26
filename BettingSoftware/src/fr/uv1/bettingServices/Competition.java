@@ -1,5 +1,6 @@
 package fr.uv1.bettingServices;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -8,6 +9,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import fr.uv1.bettingServices.bd.BetDAO;
 import fr.uv1.bettingServices.exceptions.AuthenticationException;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.CompetitionException;
@@ -331,6 +333,12 @@ public class Competition {
     	while (iter.hasNext()) {
     		Bet bet = iter.next();
     		if (bet.getSubscriber().equals(s)) {
+    		    try {
+                    BetDAO.delete(bet);
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
     			iter.remove();
     		}
     	}
