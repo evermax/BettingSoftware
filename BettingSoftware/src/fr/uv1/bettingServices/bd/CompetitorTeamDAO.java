@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import fr.uv1.bettingServices.Competitor;
 import fr.uv1.bettingServices.ACompetitor;
-import fr.uv1.bettingServices.CompetitorPlayer;
+import fr.uv1.bettingServices.Competitor;
 import fr.uv1.bettingServices.CompetitorTeam;
 import fr.uv1.bettingServices.exceptions.BadParametersException;
 import fr.uv1.bettingServices.exceptions.ExistingCompetitorException;
@@ -21,6 +20,8 @@ public class CompetitorTeamDAO {
             throws SQLException {
         Connection connection = DataBaseConnection.getConnection();
         try {
+            Integer id = null;
+            Boolean exist = false;
             connection.setAutoCommit(false);
             PreparedStatement psPersist = connection
                     .prepareStatement("INSERT INTO Competitor(name, firstname, birthdate, isteam)  values (?, ?, ?, ?)");
@@ -30,21 +31,35 @@ public class CompetitorTeamDAO {
             psPersist.setDate(3, null);
             psPersist.setBoolean(4, true);
 
-            psPersist.executeUpdate();
+            try {
+                psPersist.executeUpdate();
+            } catch (SQLException e) {
+                connection.commit();
+                PreparedStatement psGetCompetitorID = connection
+                        .prepareStatement("select idcompetitor from competitor where isteam = true and name = ?");
+                psGetCompetitorID.setString(1, comp.getName());
+                ResultSet resultSetID = psGetCompetitorID.executeQuery();
+                while (resultSetID.next()) {
+                    id = resultSetID.getInt("idcompetitor");
+                    exist = true;
+                }
+                resultSetID.close();
+            }
 
             psPersist.close();
 
-            // Retrieving the value of the id with a request on the
-            // sequence (competitor_idcompetitor_seq).
-            PreparedStatement psIdValue = connection
-                    .prepareStatement("select currval('competitor_idcompetitor_seq') as value_id");
-            ResultSet resultSet = psIdValue.executeQuery();
-            Integer id = null;
-            while (resultSet.next()) {
-                id = resultSet.getInt("value_id");
+            if (!exist) {
+                // Retrieving the value of the id with a request on the
+                // sequence (competitor_idcompetitor_seq).
+                PreparedStatement psIdValue = connection
+                        .prepareStatement("select currval('competitor_idcompetitor_seq') as value_id");
+                ResultSet resultSet = psIdValue.executeQuery();
+                while (resultSet.next()) {
+                    id = resultSet.getInt("value_id");
+                }
+                resultSet.close();
+                psIdValue.close();
             }
-            resultSet.close();
-            psIdValue.close();
 
             comp.setId(id);
 
