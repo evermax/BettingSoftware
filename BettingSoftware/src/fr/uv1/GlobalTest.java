@@ -29,11 +29,12 @@ public class GlobalTest {
 
     public static void main(String[] args) throws BadParametersException,
             AuthenticationException, ExistingSubscriberException,
-            SubscriberException, ExistingCompetitionException, CompetitionException, ExistingCompetitorException {
-        MyCalendar.setDate();
+            SubscriberException, ExistingCompetitionException,
+            CompetitionException, ExistingCompetitorException {
         try {
             connection = DataBaseConnection.getConnection();
-            psRemove = connection.prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
+            psRemove = connection
+                    .prepareStatement(" DELETE FROM competitionparticipants; DELETE FROM bet; DELETE FROM teammembers; DELETE FROM competitionranking; DELETE FROM competition; DELETE FROM competitor; DELETE FROM subscriber;");
             psRemove.executeUpdate();
             psRemove.close();
             connection.close();
@@ -45,23 +46,36 @@ public class GlobalTest {
          * Instantiation du Programme
          */
         bettingProgram = new BettingSoft(mgr_password);
-        
-        
+        MyCalendar.setDate();
+
         /*
          * Ajout des différents joueurs
          */
         // Joueur 1
         String subs1 = "Ghost";
-        String pwdSubs1 = bettingProgram.subscribe("Snow", "John", subs1, "10-02-1963",
-                mgr_password);
+        String pwdSubs1 = bettingProgram.subscribe("Snow", "John", subs1,
+                "10-02-1963", mgr_password);
         bettingProgram.creditSubscriber("Ghost", 20000, mgr_password);
-        
+
         // Joueur 2
         String subs2 = "Quidam";
-        String pwdSubs2 = bettingProgram.subscribe("Smith", "John", subs2, "14-03-1958",
-                mgr_password);
+        String pwdSubs2 = bettingProgram.subscribe("Smith", "John", subs2,
+                "14-03-1958", mgr_password);
         bettingProgram.creditSubscriber("Quidam", 25000, mgr_password);
-        
+
+        // Joueur 3
+        String subs3 = "Tatane";
+        String pwdSubs3 = bettingProgram.subscribe("Zlatan", "Ibra", subs3,
+                "24-12-1975", mgr_password);
+
+        System.out.println("Inscription de 3 personnes :\n"
+                + bettingProgram.listSubscribers(mgr_password) + "\n\n");
+
+        bettingProgram.unsubscribe(subs3, mgr_password);
+
+        System.out.println("Suppression d'une personne :\n"
+                + bettingProgram.listSubscribers(mgr_password) + "\n\n");
+
         /*
          * Ajout des différents compétiteurs
          */
@@ -71,53 +85,97 @@ public class GlobalTest {
         CompetitorPlayer c2 = (CompetitorPlayer) bettingProgram
                 .createCompetitor("Boyle", "Conan", "20-06-1985", mgr_password);
         CompetitorPlayer c3 = (CompetitorPlayer) bettingProgram
-                .createCompetitor("Groudon", "Stolley", "13-03-1984", mgr_password);
+                .createCompetitor("Groudon", "Stolley", "13-03-1984",
+                        mgr_password);
         CompetitorPlayer c4 = (CompetitorPlayer) bettingProgram
-                .createCompetitor("Obstay", "Cornac", "02-06-1954", mgr_password);
-        
+                .createCompetitor("Obstay", "Cornac", "02-06-1954",
+                        mgr_password);
+
         // Competiteurs (équipes)
-        CompetitorTeam ct1 = (CompetitorTeam) bettingProgram.createCompetitor("TheBosses", mgr_password);
+        CompetitorTeam ct1 = (CompetitorTeam) bettingProgram.createCompetitor(
+                "TheBosses", mgr_password);
         ct1.addMember(c3);
         ct1.addMember(c2);
-        CompetitorTeam ct2 = (CompetitorTeam) bettingProgram.createCompetitor("GreatThoughts", mgr_password);
+        CompetitorTeam ct2 = (CompetitorTeam) bettingProgram.createCompetitor(
+                "GreatThoughts", mgr_password);
         ct2.addMember(c4);
         ct2.addMember(c1);
-        
-        /* 
+
+        /*
          * Ajout des différentes compétitions
          */
         // Competition 1
         String competition1Name = "GolfTournament";
-        GregorianCalendar competition1closing = new GregorianCalendar(2014, 7, 14);
+        GregorianCalendar competition1closing = new GregorianCalendar(2014, 7,
+                14);
         Collection<Competitor> competitors1 = new ArrayList<Competitor>();
         competitors1.add(c1);
         competitors1.add(c2);
         competitors1.add(c3);
-        bettingProgram.addCompetition(competition1Name, competition1closing, competitors1, mgr_password);
-        
+        competitors1.add(c4);
+        bettingProgram.addCompetition(competition1Name, competition1closing,
+                competitors1, mgr_password);
+
+        System.out.println("Compétiteurs de la compétition 1 :\n"
+                + bettingProgram.listCompetitors(competition1Name) + "\n\n");
+
+        bettingProgram.deleteCompetitor(competition1Name, c4, mgr_password);
+
+        System.out
+                .println("Compétiteurs de la compétition 1 après suppression d'un compétiteur :\n"
+                        + bettingProgram.listCompetitors(competition1Name)
+                        + "\n\n");
+
         // Competition 2
         String competition2Name = "100mHaie";
-        GregorianCalendar competition2closing = new GregorianCalendar(2014, 6, 20);
+        GregorianCalendar competition2closing = new GregorianCalendar(2014, 6,
+                20);
         Collection<Competitor> competitors2 = new ArrayList<Competitor>();
         competitors2.add(c2);
         competitors2.add(c3);
-        bettingProgram.addCompetition(competition2Name, competition2closing, competitors2, mgr_password);
-        
-        
+        bettingProgram.addCompetition(competition2Name, competition2closing,
+                competitors2, mgr_password);
+
+        // Competition 3
+        String competition3Name = "RouteDuRhum";
+        GregorianCalendar competition3closing = new GregorianCalendar(2014, 10,
+                05);
+        Collection<Competitor> competitors3 = new ArrayList<Competitor>();
+        competitors3.add(c1);
+        competitors3.add(c4);
+        bettingProgram.addCompetition(competition3Name, competition3closing,
+                competitors3, mgr_password);
+
+        System.out.println("Création de 3 compétitions :\n"
+                + bettingProgram.listCompetitions() + "\n\n");
+
+        bettingProgram.cancelCompetition(competition3Name, mgr_password);
+
+        System.out.println("Annulation d'une compétition :\n"
+                + bettingProgram.listCompetitions() + "\n\n");
+
         /*
          * Différents paris sur différentes compétitions
          */
-        bettingProgram.betOnPodium(3000, competition1Name, c3, c2, c1, subs1, pwdSubs1);
-        bettingProgram.betOnPodium(3600, competition1Name, c2, c3, c1, subs2, pwdSubs2);
-        bettingProgram.betOnWinner(4000, competition2Name, c2, subs1, pwdSubs1);
-        bettingProgram.betOnWinner(14000, competition2Name, c3, subs2, pwdSubs2);
-        bettingProgram.betOnWinner(14000, competition2Name, c2, subs2, pwdSubs2);
-        
+        bettingProgram.betOnPodium(3000, competition1Name, c3, c2, c1, subs1,
+                pwdSubs1);
+        bettingProgram.betOnPodium(3600, competition1Name, c2, c3, c1, subs2,
+                pwdSubs2);
+        // bettingProgram.betOnWinner(4000, competition2Name, c2, subs1,
+        // pwdSubs1);
+        // bettingProgram
+        // .betOnWinner(14000, competition2Name, c3, subs2, pwdSubs2);
+        // bettingProgram
+        // .betOnWinner(14000, competition2Name, c2, subs2, pwdSubs2);
+
+        System.out.println("Liste des paris sur la compétition 1 :\n"
+                + bettingProgram.consultBetsCompetition(competition1Name));
+
         /*
          * Solde des paris
          */
-        MyCalendar.setDate((MyCalendar)competition1closing);
+        MyCalendar.setDate(new MyCalendar(2014, 8, 15));
         bettingProgram.settlePodium(competition1Name, c1, c2, c3, mgr_password);
-        bettingProgram.settleWinner(competition2Name, c2, mgr_password);
+        //bettingProgram.settleWinner(competition2Name, c2, mgr_password);
     }
 }

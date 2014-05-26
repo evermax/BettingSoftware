@@ -135,8 +135,10 @@ public class BettingSoft implements Betting {
 		authenticateMngr(a_managerPwd);
 		// Calculate the list of subscribers
 		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
-		ArrayList<String> subsData = new ArrayList<String>();
+		
 		for (Subscriber s : subscribers) {
+		    ArrayList<String> subsData = new ArrayList<String>();
+		    
 			subsData.add(s.getLastname());
 			subsData.add(s.getFirstname());
 			subsData.add(s.getUsername());

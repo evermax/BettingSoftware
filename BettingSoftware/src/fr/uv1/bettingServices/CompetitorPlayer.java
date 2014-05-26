@@ -82,9 +82,9 @@ public class CompetitorPlayer extends ACompetitor {
 
     @Override
     public String toString() {
-        return "CompetitorPlayer [firstName=" + firstName + "\nborndate="
+        return "CompetitorPlayer [first name = " + firstName + ", born date = "
                 + borndate.get(GregorianCalendar.DAY_OF_MONTH) + "-"
                 + borndate.get(GregorianCalendar.MONTH) + "-"
-                + borndate.get(GregorianCalendar.YEAR) + "\nname=" + name + "]";
+                + borndate.get(GregorianCalendar.YEAR) + ", name = " + name + "]\n";
     }
 }

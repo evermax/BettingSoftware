@@ -385,10 +385,10 @@ public class Competition {
 
     @Override
     public String toString() {
-        return "Competition [name=" + name + "\nclosingDate="
+        return "\nCompetition [name = " + name + "\nclosing date = "
                 + closingDate.get(GregorianCalendar.DAY_OF_MONTH) + "-"
                 + closingDate.get(GregorianCalendar.MONTH) + "-"
-                + closingDate.get(GregorianCalendar.YEAR) + "\nsettled="
-                + settled + "\ncompetitors=" + competitors + "]";
+                + closingDate.get(GregorianCalendar.YEAR) + "\nsettled = "
+                + settled + "\ncompetitors = " + competitors + "]\n";
     }
 }
