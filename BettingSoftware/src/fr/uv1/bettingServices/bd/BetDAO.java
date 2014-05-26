@@ -2,10 +2,14 @@ package fr.uv1.bettingServices.bd;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.uv1.bettingServices.ACompetitor;
 import fr.uv1.bettingServices.Bet;
+import fr.uv1.bettingServices.Competition;
 import fr.uv1.utils.DataBaseConnection;
 
 public class BetDAO {
@@ -27,6 +31,22 @@ public class BetDAO {
                 psPersist.setNull(5, java.sql.Types.INTEGER);
                 psPersist.setNull(6, java.sql.Types.INTEGER);
             }
+
+            psPersist.executeUpdate();
+            psPersist.close();
+
+            PreparedStatement psIdValue = connection
+                    .prepareStatement("select currval('bet_idbet_seq') as value_id");
+            ResultSet resultSet = psIdValue.executeQuery();
+            Integer id = null;
+            while (resultSet.next()) {
+                id = resultSet.getInt("value_id");
+            }
+            resultSet.close();
+            psIdValue.close();
+            connection.commit();
+            bet.setId(id);
+
         } catch (SQLException e) {
             try {
                 connection.rollback();
@@ -43,6 +63,16 @@ public class BetDAO {
 
     public static List<Bet> findAll() {
 
+    }
+    
+    public static List<Bet> findByCompetition(Competition competition)
+            throws SQLException {
+        Connection connection = DataBaseConnection.getConnection();
+        PreparedStatement psSelect = connection.prepareStatement("select * from bets where idcompetition = ?");
+        psSelect.setInt(1, competition.getId());
+        ResultSet resultSet = psSelect.executeQuery();
+        List<Bet> bets = new ArrayList<Bet>();
+        
     }
 
     public static void update(Bet bet) {
