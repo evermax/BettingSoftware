@@ -173,7 +173,7 @@ public class CompetitorTeamDAO {
         psUpdate.setString(2, null);
         psUpdate.setString(3, null);
         psUpdate.setBoolean(4, true);
-        psUpdate.setInt(6, competitorTeam.getId());
+        psUpdate.setInt(5, competitorTeam.getId());
 
         // Executing the prepared statement object among the database.
         // If needed, a return value (int) can be obtained. It contains

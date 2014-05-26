@@ -50,6 +50,7 @@ public class CompetitionDAO {
             psIdValue.close();
 
             for (Competitor competitor : competition.getCompetitors()) {
+                // TODO : Ne pas persister à nouveau les entrées qui existent déjà
                 if (competitor instanceof CompetitorPlayer) {
                     CompetitorPlayerDAO.persist((CompetitorPlayer) competitor);
                 } else {

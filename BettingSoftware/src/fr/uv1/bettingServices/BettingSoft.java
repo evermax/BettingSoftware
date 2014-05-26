@@ -619,6 +619,8 @@ public class BettingSoft implements Betting {
 		competitors.add(c2);
 		competitors.add(c3);
 		bettingProgram.addCompetition("100mOlympique", new GregorianCalendar(
+		        2014, 5, 6), competitors, mgr_pwd);
+		bettingProgram.addCompetition("200mOlympique", new GregorianCalendar(
 				2014, 5, 6), competitors, mgr_pwd);
 //		bettingProgram.betOnPodium(200, "100mOlympique", c1, c2, c3,
 //				"BlueJeans", passSub1);
