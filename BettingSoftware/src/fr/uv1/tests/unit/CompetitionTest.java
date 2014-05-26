@@ -36,6 +36,7 @@ public class CompetitionTest {
         assertTrue(c.getName() == "Curling_Tournament");
         assertTrue(c.getClosingDate().equals(
                 new GregorianCalendar(2016, 05, 14)));
+        assertTrue(c.areCompetitors(cp1, cp2, cp3));
     }
 
     @Test(expected = CompetitionException.class)
