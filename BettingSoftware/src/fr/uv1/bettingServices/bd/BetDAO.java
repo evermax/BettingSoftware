@@ -35,8 +35,8 @@ public class BetDAO {
                 psPersist.setInt(5, ((ACompetitor) bet.getSecond()).getId());
                 psPersist.setInt(6, ((ACompetitor) bet.getThird()).getId());
             } else {
-                psPersist.setNull(5, java.sql.Types.INTEGER);
-                psPersist.setNull(6, java.sql.Types.INTEGER);
+                psPersist.setNull(5, java.sql.Types.NULL);
+                psPersist.setNull(6, java.sql.Types.NULL);
             }
 
             psPersist.executeUpdate();
@@ -158,8 +158,8 @@ public class BetDAO {
             psUpdate.setInt(5, ((ACompetitor) bet.getSecond()).getId());
             psUpdate.setInt(6, ((ACompetitor) bet.getThird()).getId());
         } else {
-            psUpdate.setNull(5, java.sql.Types.INTEGER);
-            psUpdate.setNull(6, java.sql.Types.INTEGER);
+            psUpdate.setNull(5, java.sql.Types.NULL);
+            psUpdate.setNull(6, java.sql.Types.NULL);
         }
 
         psUpdate.executeUpdate();
