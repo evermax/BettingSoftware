@@ -37,8 +37,8 @@ CREATE TABLE bet (
     idcompetition integer NOT NULL,
     tokens integer,
     idcompetitor1 integer NOT NULL,
-    idcompetitor2 integer NOT NULL,
-    idcompetitor3 integer NOT NULL
+    idcompetitor2 integer,
+    idcompetitor3 integer
 );
 
 
